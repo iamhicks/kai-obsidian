@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pete's Trading Journal</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌊 Pete's Trading Journal</h1>
+            <nav>
+                <button class="nav-btn active" onclick="showSection('dashboard')">Dashboard</button>
+                <button class="nav-btn" onclick="showSection('new-trade')">New Trade</button>
+                <button class="nav-btn" onclick="showSection('history')">Trade History</button>
+            </nav>
+        </header>
+
+        <!-- DASHBOARD SECTION -->
+        <section id="dashboard" class="section active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Trades</h3>
+                    <p class="stat-value" id="total-trades">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Win Rate</h3>
+                    <p class="stat-value" id="win-rate">0%</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total P&L</h3>
+                    <p class="stat-value" id="total-pnl">£0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Avg R:R</h3>
+                    <p class="stat-value" id="avg-rr">0</p>
+                </div>
+            </div>
+
+            <div class="charts-container">
+                <div class="chart-box">
+                    <h3>Performance Over Time</h3>
+                    <canvas id="equity-curve"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h3>Win Rate by Setup</h3>
+                    <canvas id="setup-chart"></canvas>
+                </div>
+            </div>
+
+            <div class="recent-trades">
+                <h3>Recent Trades</h3>
+                <div id="recent-trades-list"></div>
+            </div>
+        </section>
+
+        <!-- NEW TRADE SECTION -->
+        <section id="new-trade" class="section">
+            <h2>New Trade Entry</h2>
+            <form id="trade-form">
+                <!-- Basic Info -->
+                <div class="form-section">
+                    <h3>Trade Details</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="date" id="trade-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input type="time" id="trade-time" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Symbol</label>
+                            <select id="symbol" required>
+                                <option value="">Select...</option>
+                                <option value="US100">US100 (NQ)</option>
+                                <option value="US500">US500 (ES)</option>
+                                <option value="US30">US30 (YM)</option>
+                                <option value="XAUUSD">Gold (XAUUSD)</option>
+                                <option value="XAGUSD">Silver (XAGUSD)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Direction</label>
+                            <select id="direction" required>
+                                <option value="">Select...</option>
+                                <option value="long">Long</option>
+                                <option value="short">Short</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Price Info -->
+                <div class="form-section">
+                    <h3>Price Levels</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Entry Price</label>
+                            <input type="number" id="entry-price" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Exit Price</label>
+                            <input type="number" id="exit-price" step="0.01" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Stop Loss</label>
+                            <input type="number" id="stop-loss" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Take Profit</label>
+                            <input type="number" id="take-profit" step="0.01" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Position Size</label>
+                            <input type="number" id="position-size" placeholder="Contracts/Lots" required>
+                        </div>
+                        <div class="form-group">
+                            <label>P&L (auto-calculated)</label>
+                            <input type="text" id="trade-pnl" readonly class="readonly">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Setup Info -->
+                <div class="form-section">
+                    <h3>Setup Analysis</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Setup Type</label>
+                            <select id="setup-type" required>
+                                <option value="">Select...</option>
+                                <option value="C3">C3 - Confirmation</option>
+                                <option value="C2">C2 - Early Signal</option>
+                                <option value="C4">C4 - Continuation</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Entry Timeframe</label>
+                            <select id="entry-timeframe" required>
+                                <option value="">Select...</option>
+                                <option value="5M">5M</option>
+                                <option value="3M">3M</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Session</label>
+                            <select id="session">
+                                <option value="">Select...</option>
+                                <option value="London">London</option>
+                                <option value="NY">New York</option>
+                                <option value="Asia">Asia</option>
+                                <option value="Overlap">London/NY Overlap</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>CISD Confirmed?</label>
+                            <select id="cisd-confirmed">
+                                <option value="">Select...</option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>4H Profile</label>
+                            <select id="profile-type">
+                                <option value="">Select...</option>
+                                <option value="London-Reversal">London Reversal</option>
+                                <option value="NY-Continuation">NY Continuation</option>
+                                <option value="NY-Reversal">NY Reversal</option>
+                                <option value="Asia-Reversal">Asia Reversal</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Result</label>
+                            <select id="result" required>
+                                <option value="">Select...</option>
+                                <option value="win">Win</option>
+                                <option value="loss">Loss</option>
+                                <option value="breakeven">Breakeven</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Psychology -->
+                <div class="form-section">
+                    <h3>Psychology & Journal</h3>
+                    <div class="form-group">
+                        <label>Pre-Trade Emotions</label>
+                        <select id="pre-emotion">
+                            <option value="">Select...</option>
+                            <option value="confident">Confident</option>
+                            <option value="hesitant">Hesitant</option>
+                            <option value="fomo">FOMO</option>
+                            <option value="fear">Fear</option>
+                            <option value="neutral">Neutral</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Mistakes Made</label>
+                        <textarea id="mistakes" rows="2" placeholder="Any rule breaks or errors..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Lessons Learned</label>
+                        <textarea id="lessons" rows="2" placeholder="What will you do differently?"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Trade Notes</label>
+                        <textarea id="notes" rows="3" placeholder="Additional observations..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Chart Screenshots -->
+                <div class="form-section">
+                    <h3>Chart Screenshots (up to 4)</h3>
+                    <div class="screenshot-upload">
+                        <input type="file" id="screenshot-1" accept="image/*" class="file-input">
+                        <input type="file" id="screenshot-2" accept="image/*" class="file-input">
+                        <input type="file" id="screenshot-3" accept="image/*" class="file-input">
+                        <input type="file" id="screenshot-4" accept="image/*" class="file-input">
+                    </div>
+                    <div id="screenshot-preview" class="screenshot-preview"></div>
+                </div>
+
+                <button type="submit" class="submit-btn">Save Trade</button>
+            </form>
+        </section>
+
+        <!-- HISTORY SECTION -->
+        <section id="history" class="section">
+            <h2>Trade History</h2>
+            <div class="filters">
+                <select id="filter-symbol">
+                    <option value="">All Symbols</option>
+                    <option value="US100">US100</option>
+                    <option value="US500">US500</option>
+                    <option value="US30">US30</option>
+                    <option value="XAUUSD">Gold</option>
+                    <option value="XAGUSD">Silver</option>
+                </select>
+                <select id="filter-result">
+                    <option value="">All Results</option>
+                    <option value="win">Wins</option>
+                    <option value="loss">Losses</option>
+                </select>
+                <select id="filter-setup">
+                    <option value="">All Setups</option>
+                    <option value="C3">C3</option>
+                    <option value="C2">C2</option>
+                    <option value="C4">C4</option>
+                </select>
+                <button onclick="exportTrades()">Export CSV</button>
+            </div>
+            <div id="trades-list" class="trades-list"></div>
+        </section>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
