@@ -49,10 +49,14 @@ cp -r ~/Documents/Kai/Backup/2026-02-06_07-26/ /Volumes/YourDrive/KaiBackup/
 
 ### 3. Project Files (GitHub + Local)
 **Individual repos:**
-- `iamhicks-website` — `/Users/peteroberts/Documents/Kai/Website/`
-- `website` (mind-demo) — `/Users/peteroberts/Documents/Kai/KnowledgeBase/`
+- `iamhicks-website` — Marketing site at `/Users/peteroberts/Documents/Kai/Website/`
+  - Contains: iamhicks-landing.html (main site), mind-landing.html, taskmaster-features.html
+- `website` (mind-demo) — Mind app at `/Users/peteroberts/Documents/Kai/KnowledgeBase/`
+  - Contains: index.html (Mind app), mind-demo/ (deployed version)
 - `kai-obsidian` — Obsidian vault
 - TradingJournal, TaskMaster, FinanceTracker — as configured
+
+**⚠️ IMPORTANT:** Website (marketing) and KnowledgeBase (Mind app) are DIFFERENT folders. Do not confuse them.
 
 ### 4. Local Backup Copy (External Drive)
 **Location:** `/Users/peteroberts/Documents/Kai/Backup/`
