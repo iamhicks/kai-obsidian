@@ -36,10 +36,27 @@
 - Project documentation
 - Any files you manually add
 
-### 3. Project Files (GitHub)
+### 3. Project Files (GitHub + Local)
 **Individual repos:**
-- `website` (iamhicks.com) — `/Users/peteroberts/Documents/Kai/KnowledgeBase/`
-- Other project repos as created
+- `iamhicks-website` — `/Users/peteroberts/Documents/Kai/Website/`
+- `website` (mind-demo) — `/Users/peteroberts/Documents/Kai/KnowledgeBase/`
+- `kai-obsidian` — Obsidian vault
+- TradingJournal, TaskMaster, FinanceTracker — as configured
+
+### 4. Local Backup Copy (External Drive)
+**Location:** `/Users/peteroberts/Documents/Kai/Backup/`
+
+**Includes:**
+- Complete copy of Kai Memory
+- Complete copy of Obsidian Vault
+- All project directories (Website, Mind, TradingJournal, TaskMaster, FinanceTracker)
+- README with restore instructions
+- Timestamped folders (last 10 kept)
+
+**Use this for:**
+- Exporting to external drive
+- Offline backup
+- Quick restore without internet
 
 ## When Backups Happen
 
@@ -50,6 +67,27 @@
 | **Explicit request** | You say "backup now" → immediate commit |
 | **Obsidian sync** | Manual via `./sync-to-obsidian.sh` or implicitly at session end |
 | **Project deploys** | Each deploy to `mind-demo/` etc is a git commit |
+| **Master script** | Run `~/.openclaw/workspace/backup-all.sh` for everything |
+
+## Quick Backup Command
+
+**Backup everything to GitHub + create local copy:**
+```bash
+~/.openclaw/workspace/backup-all.sh
+```
+
+This will:
+1. Commit Kai Memory to GitHub
+2. Sync & commit Obsidian to GitHub
+3. Commit all project repos to GitHub
+4. Create local backup in `~/Documents/Kai/Backup/`
+5. Keep only last 10 local backups
+
+**For local copy only (no GitHub):**
+```bash
+# Copy timestamped backup folder to external drive
+cp -r ~/Documents/Kai/Backup/2026-*-*/ /Volumes/YourDrive/KaiBackup/
+```
 
 ## How to Check Backup Status
 
@@ -187,10 +225,10 @@ git show <commit-hash>:memory/2026-02-05.md > recovered.md
 
 ## Backup Checklist (For Pete)
 
-- [ ] Verify GitHub commits daily (ask me "did you backup?")
-- [ ] Run sync script manually: `cd ~/.openclaw/workspace && ./sync-to-obsidian.sh`
+- [ ] Run master backup weekly: `~/.openclaw/workspace/backup-all.sh`
+- [ ] Copy local backup to external drive monthly
+- [ ] Verify GitHub repos are accessible
 - [ ] Keep SSH keys backed up (for GitHub access)
-- [ ] Document any new project repos
 
 ## Emergency Contacts
 
@@ -201,10 +239,11 @@ If recovery fails:
 
 ---
 
-## Current Repo Status (Auto-updated)
+## Current Repo Status
 
-| Repo | Last Commit | Status |
-|------|-------------|--------|
-| kai-memory | 2026-02-06 | ✅ Backed up |
-| website (mind-demo) | 2026-02-05 | ✅ Backed up |
-| obsidian-vault | Check manually | ⚠️ Verify |
+| Repo | GitHub | Local Backup |
+|------|--------|--------------|
+| kai-memory | ✅ github.com/hellokaibot-alt/kai-memory | ✅ ~/Documents/Kai/Backup/ |
+| kai-obsidian | ✅ github.com/hellokaibot-alt/kai-obsidian | ✅ Included above |
+| iamhicks-website | ✅ github.com/hellokaibot-alt/iamhicks-website | ✅ Included above |
+| mind-demo | ✅ github.com/hellokaibot-alt/website | ✅ Included above |
