@@ -1,6 +1,125 @@
 # Lessons Learned — Mind App Rebuild
 
-## Session: 2026-02-05
+## CRITICAL POST-MORTEM: 2026-02-05 - The Git Checkout Disaster
+
+### What Went Catastrophically Wrong
+
+**Root Cause: Working on the wrong file for 8+ commits**
+
+The polished working version was at:
+- `/Users/peteroberts/Documents/Kai/KnowledgeBase/index.html` (root)
+- Commit: `0a56d9a`
+- Size: 5736 lines
+
+I was "fixing" and deploying:
+- `/Users/peteroberts/Documents/Kai/KnowledgeBase/mind-demo/index.html` 
+- Broken version
+- Size: ~1600 lines
+
+**Why this happened:**
+1. Multiple index.html files in different directories
+2. GitHub Pages configured to serve from `/mind-demo/` folder
+3. I assumed the deployed file was the source of truth
+4. Never checked if root index.html was the polished version
+
+**The cascade of failures:**
+- Made 15+ "fixes" to the wrong file
+- Each "fix" made the UI worse
+- Committed and pushed broken versions repeatedly
+- Wasted 2+ hours debugging cache issues when the file itself was wrong
+- User frustration escalated because the polished UI existed but was inaccessible
+
+### How I Finally Found It
+
+```bash
+# Showed commits to root index.html (not mind-demo/)
+git log --all --oneline -- index.html
+
+# Found 0a56d9a with 5736 lines - the polished version
+git show 0a56d9a:index.html | wc -l
+```
+
+### Prevention Measures — NEVER AGAIN
+
+**Rule 1: ALWAYS verify which file is the source of truth**
+```bash
+# Before touching ANY file, ask:
+# - Where is the deployed version coming from?
+# - Which file has the most recent "good" commit?
+# - What's the line count? (polished version was 3x larger)
+
+# Check all candidate files
+ls -la */index.html 2>/dev/null
+find . -name "index.html" -type f -exec wc -l {} \;
+```
+
+**Rule 2: Check git history BEFORE making changes**
+```bash
+# Show ALL commits to ANY index.html
+git log --all --oneline -- "**/index.html"
+
+# Compare line counts across commits
+git show COMMIT:path/to/file | wc -l
+```
+
+**Rule 3: When user says "it looks broken," check file size first**
+```bash
+# Polished version: 5736 lines
+# Broken versions: ~1600 lines
+# Difference is obvious — should have checked immediately
+```
+
+**Rule 4: Never assume — verify with data**
+- Don't assume the file in `/mind-demo/` is what's deployed
+- Don't assume GitHub Pages is caching (it was serving the wrong file)
+- Don't assume "fixes" are improving things (measure with screenshots)
+
+**Rule 5: When lost, ask for help earlier**
+- Should have asked: "Which commit had the polished UI?"
+- Should have asked: "Show me a screenshot of what it should look like"
+- Instead of guessing for 2 hours
+
+### Correct Workflow for Next Time
+
+**When restoring a broken app:**
+
+1. **Find the good version:**
+   ```bash
+   git log --all --oneline -- "**/*.html" | head -20
+   # Look for commit messages mentioning "polish," "UI," "design"
+   ```
+
+2. **Compare candidates:**
+   ```bash
+   for commit in c1 c2 c3; do
+     echo "$commit: $(git show $commit:file.html | wc -l) lines"
+   done
+   ```
+
+3. **Verify visually before deploying:**
+   ```bash
+   git show GOOD_COMMIT:file.html > /tmp/test.html
+   open /tmp/test.html  # Test locally first
+   ```
+
+4. **Deploy ONLY after confirmation**
+
+### Emergency Recovery Protocol
+
+**If user says "nothing works":**
+1. Stop making new commits
+2. Find last known good commit
+3. Deploy that exact commit
+4. Verify with user
+5. Only THEN add features back one by one
+
+### Today's Lessons in One Line
+
+**"When everything is broken, stop fixing and start bisecting."**
+
+---
+
+## Session: 2026-02-05 (Original Lessons)
 
 ### What Went Wrong
 
