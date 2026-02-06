@@ -3,7 +3,7 @@
 - **Name:** Pete
 - **What to call them:** Pete
 - **Pronouns:** 
-- **Timezone:** London (GMT), 
+- **Timezone:** London (GMT)
 - **Family:** 
   - Wife (devoted husband)
   - 4-year-old daughter (top priority)

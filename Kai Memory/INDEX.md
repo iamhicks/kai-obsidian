@@ -43,6 +43,7 @@ Then I'll reload and adopt your changes.
 | File | What's Inside |
 |------|---------------|
 | [[GitHub Backup Setup]] | Backup configuration, restore process, current status |
+| [[Nightly Missions System]] | Autonomous nightly work system - what I build each night |
 
 ### **Long-Term Knowledge**
 
