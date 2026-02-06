@@ -1,0 +1,235 @@
+{
+  "main": {
+    "id": "38c4c87640ed7040",
+    "type": "split",
+    "children": [
+      {
+        "id": "109827915994fa31",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0642d76b8522f177",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Kai Memory/GitHub Backup Setup.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "GitHub Backup Setup"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "7f444b23e8191e26",
+    "type": "split",
+    "children": [
+      {
+        "id": "8e574b33a4ebeca1",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "48f92a1b88b877fc",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "0d87296a0000de32",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "978894dcef81a39d",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "06f9acab9bd1ff75",
+    "type": "split",
+    "children": [
+      {
+        "id": "df80506924856430",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0cf15372bd50b230",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Tasks/Kanban.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Kanban"
+            }
+          },
+          {
+            "id": "3e660b2d5356b398",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Tasks/Kanban.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Kanban"
+            }
+          },
+          {
+            "id": "96951b09262c04a8",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "4c3a5a086de392e8",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "6a70e94936a350c1",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Tasks/Kanban.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Kanban"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "0642d76b8522f177",
+  "lastOpenFiles": [
+    "Kai Memory/SOUL.md",
+    "Kai Memory/LESSONS.md",
+    "Kai Memory/2026-02-05.md",
+    "Kai Memory/MEMORY.md",
+    "Kai Memory/Nightly Missions System.md",
+    "Kai Memory/Recovery After Crash.md",
+    "Kai Memory/TOOLS.md",
+    "Kai Memory/AGENTS.md",
+    "Kai Memory/2026-02-04.md",
+    "Kai Memory/2026-02-03.md",
+    "Trading-Journal-App/js/storage.js",
+    "Trading-Journal-App/js/charts.js",
+    "Trading-Journal-App/js/app.js",
+    "Trading-Journal-App/css/styles.css",
+    "Trading-Journal-App/templates.js",
+    "Trading-Journal-App/styles.css",
+    "Trading-Journal-App/storage.js",
+    "Trading-Journal-App/statistics.js",
+    "Trading-Journal-App/psychology.js",
+    "Trading-Journal-App/mistakes.js",
+    "Trading-Journal-App/README.md",
+    "Business/Product_Ideas/App_Opportunities_Research_Feb_2026.md",
+    "Trading/Lessons from Others/4 Hour Profiling.md",
+    "Trading/Scripts/GxT Alerts/GxT_v1.0.md",
+    "Business/TaskMaster/README.md",
+    "Tasks/Kai Board.md",
+    "Trading/Journal/Trading Journal.md",
+    "Business/Marketing/Gumroad Listing.md",
+    "Business/Marketing/Email Launch.md",
+    "Business/Marketing/Demo Script.md",
+    "Business/Marketing/Social Media Posts.md",
+    "Business/Marketing/README.md",
+    "Business/Marketing/Landing Page Copy.md",
+    "Business/Marketing/FAQ.md",
+    "Trading/Marketing/Demo Script.md",
+    "Trading/Marketing/FAQ.md",
+    "Trading/Lessons from Others/images/4h-profile-image-6.jpg",
+    "Trading/Lessons from Others/images/4h-profile-image-5.jpg",
+    "Trading/Lessons from Others/images/4h-profile-image-4.jpg",
+    "Trading/Lessons from Others/images/4h-profile-image-3.jpg",
+    "Trading/Lessons from Others/images/4h-profile-image-2.jpg",
+    "Trading/Lessons from Others/images/4h-profile-image-1.jpg",
+    "Trading/Lessons from Others/4h-profile-image-6.jpg",
+    "Trading/Lessons from Others/4h-profile-image-5.jpg",
+    "Trading/Lessons from Others/4h-profile-image-4.jpg",
+    "Trading/Lessons from Others/4h-profile-image-3.jpg"
+  ]
+}
