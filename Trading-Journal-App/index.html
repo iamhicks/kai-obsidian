@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trading Journal v2</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body>
     <div class="app-container">
         <!-- Header -->
         <header class="app-header">
-            <h1>📈 Trading Journal v2</h1>
+            <h1><i class="ph ph-chart-line-up"></i> Trading Journal v2</h1>
             <nav class="main-nav">
                 <button class="nav-btn active" data-view="trades">Trades</button>
                 <button class="nav-btn" data-view="psychology">Psychology</button>
@@ -40,7 +41,7 @@
                 <div class="psychology-container">
                     <!-- Discipline Score Card -->
                     <div class="psych-card discipline-score-card">
-                        <h3>🎯 Discipline Score</h3>
+                        <h3><i class="ph ph-target"></i> Discipline Score</h3>
                         <div class="score-display">
                             <div class="score-circle" id="discipline-score">
                                 <span class="score-value">--</span>
@@ -54,7 +55,7 @@
 
                     <!-- Mood Tracking Chart -->
                     <div class="psych-card mood-chart-card">
-                        <h3>📊 Mood Tracking (30 Days)</h3>
+                        <h3><i class="ph ph-chart-bar"></i> Mood Tracking (30 Days)</h3>
                         <div class="mood-chart-container">
                             <canvas id="mood-chart"></canvas>
                         </div>
@@ -69,7 +70,7 @@
 
                     <!-- Psychology Insights -->
                     <div class="psych-card insights-card">
-                        <h3>💡 Psychology Insights</h3>
+                        <h3><i class="ph ph-lightbulb"></i> Psychology Insights</h3>
                         <div class="insights-list" id="psychology-insights">
                             <!-- Insights populated by JS -->
                         </div>
@@ -77,7 +78,7 @@
 
                     <!-- Pre-Trade Checklists History -->
                     <div class="psych-card checklist-history-card">
-                        <h3>📝 Recent Pre-Trade Checklists</h3>
+                        <h3><i class="ph ph-list-checks"></i> Recent Pre-Trade Checklists</h3>
                         <div class="checklist-history" id="pretrade-history">
                             <!-- History populated by JS -->
                         </div>
@@ -90,8 +91,8 @@
                 <div class="view-header">
                     <h2>Trade Templates</h2>
                     <div class="view-header-actions">
-                        <button class="btn btn-secondary" id="manage-accounts-btn">🏦 Manage Accounts</button>
-                        <button class="btn btn-secondary" id="manage-mistakes-btn">⚠️ Manage Mistakes</button>
+                        <button class="btn btn-secondary" id="manage-accounts-btn"><i class="ph ph-bank"></i> Manage Accounts</button>
+                        <button class="btn btn-secondary" id="manage-mistakes-btn"><i class="ph ph-warning"></i> Manage Mistakes</button>
                         <button class="btn btn-primary" id="add-template-btn">+ Create Template</button>
                     </div>
                 </div>
@@ -182,7 +183,7 @@
 
                     <!-- Target Statistics -->
                     <div class="stats-section">
-                        <h3>🎯 Target Statistics</h3>
+                        <h3><i class="ph ph-bullseye"></i> Target Statistics</h3>
                         <div class="target-stats" id="target-stats">
                             <!-- Populated by JS -->
                         </div>
@@ -190,7 +191,7 @@
 
                     <!-- Mistakes Analysis -->
                     <div class="stats-section">
-                        <h3>⚠️ Mistakes Analysis</h3>
+                        <h3><i class="ph ph-warning-octagon"></i> Mistakes Analysis</h3>
                         <div class="mistakes-stats" id="mistakes-stats">
                             <!-- Populated by JS -->
                         </div>
@@ -198,7 +199,7 @@
 
                     <!-- 4H Profile Analysis -->
                     <div class="stats-section">
-                        <h3>📊 4H Profile Analysis</h3>
+                        <h3><i class="ph ph-chart-bar"></i> 4H Profile Analysis</h3>
                         <div class="profile4h-stats" id="profile4h-stats">
                             <!-- Populated by JS -->
                         </div>
@@ -317,7 +318,7 @@
 
                     <!-- Pre-Trade Checklist -->
                     <div class="form-section" id="pretrade-section">
-                        <h4>🧠 Pre-Trade Checklist</h4>
+                        <h4><i class="ph ph-brain"></i> Pre-Trade Checklist</h4>
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="pre-mood">Current Mood</label>
@@ -352,7 +353,7 @@
 
                         <!-- 4 Hour Profile Checklist -->
                         <div class="custom-checklist-section" style="margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border);">
-                            <h5 style="margin-bottom: 10px; color: var(--primary);">📊 4 Hour Profile</h5>
+                            <h5 style="margin-bottom: 10px; color: var(--primary);"><i class="ph ph-chart-line"></i> 4 Hour Profile</h5>
                             <div class="custom-checklist" id="profile4h-checklist">
                                 <!-- 4H Profile checklist items populated by JS -->
                             </div>
@@ -360,7 +361,7 @@
 
                         <!-- Drivers Checklist -->
                         <div class="custom-checklist-section" style="margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border);">
-                            <h5 style="margin-bottom: 10px; color: var(--primary);">🎯 Drivers</h5>
+                            <h5 style="margin-bottom: 10px; color: var(--primary);"><i class="ph ph-flag"></i> Drivers</h5>
                             <div class="custom-checklist" id="drivers-checklist">
                                 <!-- Drivers checklist items populated by JS -->
                             </div>
@@ -369,7 +370,7 @@
 
                     <!-- Post-Trade Reflection -->
                     <div class="form-section" id="posttrade-section">
-                        <h4>📝 Post-Trade Reflection</h4>
+                        <h4><i class="ph ph-note-pencil"></i> Post-Trade Reflection</h4>
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="post-mood">Post-Trade Mood</label>
@@ -413,7 +414,7 @@
 
                     <!-- Common Mistakes -->
                     <div class="form-section" id="mistakes-section">
-                        <h4>⚠️ Common Mistakes</h4>
+                        <h4><i class="ph ph-warning-circle"></i> Common Mistakes</h4>
                         <div class="form-group full-width">
                             <label>Select mistakes made in this trade (click to select multiple):</label>
                             <div class="mistake-tags" id="mistake-tags">
@@ -458,7 +459,7 @@
                         <label>Main Checklist Items</label>
                         <div class="checklist-builder" id="checklist-builder">
                             <div class="checklist-item-input" draggable="true">
-                                <span class="drag-handle">☰</span>
+                                <span class="drag-handle"><i class="ph ph-dots-six-vertical"></i></span>
                                 <input type="text" class="form-input checklist-text" placeholder="Checklist item (e.g., C2/C3 structure present)">
                                 <button type="button" class="btn btn-small btn-danger remove-checklist">&times;</button>
                             </div>
@@ -467,10 +468,10 @@
                     </div>
 
                     <div class="form-group">
-                        <label>📊 4 Hour Profile Checklist</label>
+                        <label><i class="ph ph-chart-line"></i> 4 Hour Profile Checklist</label>
                         <div class="checklist-builder" id="profile4h-builder">
                             <div class="checklist-item-input" draggable="true">
-                                <span class="drag-handle">☰</span>
+                                <span class="drag-handle"><i class="ph ph-dots-six-vertical"></i></span>
                                 <input type="text" class="form-input profile4h-text" placeholder="4H Profile item (e.g., HTF PD Array identified)">
                                 <button type="button" class="btn btn-small btn-danger remove-profile4h">&times;</button>
                             </div>
@@ -479,10 +480,10 @@
                     </div>
 
                     <div class="form-group">
-                        <label>🎯 Drivers Checklist</label>
+                        <label><i class="ph ph-flag"></i> Drivers Checklist</label>
                         <div class="checklist-builder" id="drivers-builder">
                             <div class="checklist-item-input" draggable="true">
-                                <span class="drag-handle">☰</span>
+                                <span class="drag-handle"><i class="ph ph-dots-six-vertical"></i></span>
                                 <input type="text" class="form-input drivers-text" placeholder="Driver item (e.g., SMT/Divergence present)">
                                 <button type="button" class="btn btn-small btn-danger remove-drivers">&times;</button>
                             </div>
@@ -508,7 +509,7 @@
     <div class="modal" id="mistakes-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>⚠️ Manage Common Mistakes</h3>
+                <h3><i class="ph ph-warning-octagon"></i> Manage Common Mistakes</h3>
                 <button class="modal-close" id="close-mistakes-modal">&times;</button>
             </div>
             <div class="modal-body">
@@ -540,7 +541,7 @@
     <div class="modal" id="accounts-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>🏦 Manage Trading Accounts</h3>
+                <h3><i class="ph ph-bank"></i> Manage Trading Accounts</h3>
                 <button class="modal-close" id="close-accounts-modal">×</button>
             </div>
             <div class="modal-body">
