@@ -1,6 +1,17 @@
 # Backup & Recovery
 
-*Last updated: 2026-02-06*
+*Last updated: 06/02/2026*
+
+**To export to external drive:**
+
+```bash
+# Copy the latest backup
+cp -r ~/Documents/Kai/Backup/2026-02-06_07-26/ /Volumes/YourDrive/KaiBackup/
+
+# Or run fresh backup first
+~/.openclaw/workspace/backup-all.sh
+```
+
 
 ## What Gets Backed Up
 

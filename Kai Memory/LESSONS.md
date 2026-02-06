@@ -1,6 +1,6 @@
 # Lessons Learned — Mind App Rebuild
 
-## CRITICAL POST-MORTEM: 2026-02-05 - The Git Checkout Disaster
+## CRITICAL POST-MORTEM: 05/02/2026 - The Git Checkout Disaster
 
 ### What Went Catastrophically Wrong
 
@@ -119,7 +119,7 @@ git show COMMIT:path/to/file | wc -l
 
 ---
 
-## Session: 2026-02-05 (Original Lessons)
+## Session: 05/02/2026 (Original Lessons)
 
 ### What Went Wrong
 
@@ -226,7 +226,7 @@ When adding new features, verify:
 
 ---
 
-*Last updated: 2026-02-05 by Kai*
+*Last updated: 05/02/2026 by Kai*
 
 ---
 
