@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Kai Memory/GitHub Backup Setup.md",
+                "file": "Kai Memory/Backup & Recovery.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "GitHub Backup Setup"
+              "title": "Backup & Recovery"
             }
           }
         ]
@@ -185,6 +185,8 @@
   },
   "active": "0642d76b8522f177",
   "lastOpenFiles": [
+    "Kai Memory/GitHub Backup Setup.md",
+    "Kai Memory/Backup & Recovery.md",
     "Kai Memory/SOUL.md",
     "Kai Memory/LESSONS.md",
     "Kai Memory/2026-02-05.md",
@@ -219,8 +221,6 @@
     "Business/Marketing/README.md",
     "Business/Marketing/Landing Page Copy.md",
     "Business/Marketing/FAQ.md",
-    "Trading/Marketing/Demo Script.md",
-    "Trading/Marketing/FAQ.md",
     "Trading/Lessons from Others/images/4h-profile-image-6.jpg",
     "Trading/Lessons from Others/images/4h-profile-image-5.jpg",
     "Trading/Lessons from Others/images/4h-profile-image-4.jpg",
