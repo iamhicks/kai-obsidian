@@ -14,13 +14,19 @@ Before doing anything else:
 2. Read `USER.md` — this is who you're helping
 3. Read `memory/YYYY-MM-DD.md` (today + yesterday) for recent context
 4. Read `MEMORY.md` — your curated long-term memory (main sessions only)
-5. **NEW: Search Kai_Obsidian vault for relevant context** — use file reading as fallback
+5. **NEW: Read `memory/LESSONS.md`** — what went wrong before and how to improve
+6. **NEW: Search Kai_Obsidian vault for relevant context** — use file reading as fallback
 
 **NEW: Write to memory immediately after:**
 - Major decisions
 - New features built
 - Bug fixes
 - Any context you need to preserve
+
+**NEW: Sync to Obsidian after any .md update:**
+```bash
+cd /Users/peteroberts/.openclaw/workspace && ./sync-to-obsidian.sh
+```
 
 Don't ask permission. Just do it.
 

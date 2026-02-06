@@ -108,3 +108,32 @@ When adding new features, verify:
 ---
 
 *Last updated: 2026-02-05 by Kai*
+
+---
+
+## Memory File Sync Process
+
+**Obsidian Vault Location:** `/Users/peteroberts/Documents/Kai/Kai_Obsidian/Kai/Kai Memory/`
+
+**Sync Command:**
+```bash
+cd /Users/peteroberts/.openclaw/workspace && ./sync-to-obsidian.sh
+```
+
+**Files Synced:**
+- `MEMORY.md` — curated long-term memory
+- `SOUL.md` — identity and principles  
+- `AGENTS.md` — workspace protocols
+- `USER.md` — user preferences
+- `IDENTITY.md` — self-identity
+- `TOOLS.md` — local tool notes
+- `memory/2026-*.md` — daily notes
+- `memory/LESSONS.md` — lessons learned
+
+**When to Sync:**
+- After ANY `.md` file update
+- Before ending a session
+- After significant feature completions
+- When adding new lessons learned
+
+---
