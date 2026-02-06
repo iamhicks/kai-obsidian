@@ -61,12 +61,26 @@ cp -r ~/Documents/Kai/Backup/2026-02-06_07-26/ /Volumes/YourDrive/KaiBackup/
 ### 4. Local Backup Copy (External Drive)
 **Location:** `/Users/peteroberts/Documents/Kai/Backup/`
 
+**Structure:**
+```
+/Backup/
+  README.txt              - Master index
+  /Website/dd-mm-yy/      - Marketing website (iamhicks.com)
+  /Obsidian/dd-mm-yy/     - Obsidian vault
+  /Mind/dd-mm-yy/         - Mind knowledge base app
+  /Edge/dd-mm-yy/         - TradingJournal
+  /Flow/dd-mm-yy/         - TaskMaster
+  /OpenClaw/dd-mm-yy/     - OpenClaw config + memory files
+```
+
 **Includes:**
-- Complete copy of Kai Memory
-- Complete copy of Obsidian Vault
-- All project directories (Website, Mind, TradingJournal, TaskMaster, FinanceTracker)
-- README with restore instructions
-- Timestamped folders (last 10 kept)
+- Complete copy of each component
+- Timestamped folders (dd-mm-yy format)
+- Master README with restore instructions
+
+**Retention:**
+- Last 10 backups per component kept automatically
+- Older backups auto-deleted
 
 **Use this for:**
 - Exporting to external drive
