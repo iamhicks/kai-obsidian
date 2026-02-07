@@ -7,8 +7,15 @@
 4. Read `MEMORY.md` — curated long-term memory
 5. Search `/Kai_Obsidian/` for project context
 
-## Layer 2: Frequent Disk Writes (Immediate Persistence)
-**Write to memory AFTER:**
+## Layer 2: Session Summary Protocol (End of Every Session)
+
+**Use `memory/TEMPLATE.md` format for all session summaries:**
+1. Copy template to `memory/YYYY-MM-DD.md`
+2. Fill in: accomplishments, issues, decisions, current state, next steps, lessons
+3. Update `MEMORY.md` with curated key points
+4. Run `./sync-to-obsidian.sh` to sync all changes
+
+**Also write immediately after:**
 - Major feature completions
 - Bug fixes
 - Architecture decisions
@@ -17,7 +24,7 @@
 - Any context worth preserving
 
 **Files to update:**
-- `memory/YYYY-MM-DD.md` — daily raw log
+- `memory/YYYY-MM-DD.md` — daily raw log (use TEMPLATE.md format)
 - `MEMORY.md` — curated long-term memory
 - Relevant files in `Kai_Obsidian/` — project notes
 

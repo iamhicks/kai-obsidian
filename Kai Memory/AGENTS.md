@@ -17,6 +17,12 @@ Before doing anything else:
 5. **NEW: Read `memory/LESSONS.md`** — what went wrong before and how to improve
 6. **NEW: Search Kai_Obsidian vault for relevant context** — use file reading as fallback
 
+**NEW: Write session summary at end using TEMPLATE.md format:**
+- Copy `memory/TEMPLATE.md` to new `memory/YYYY-MM-DD.md`
+- Fill in: accomplishments, decisions, current state, next steps, lessons
+- Update `MEMORY.md` with curated key points
+- Run `./sync-to-obsidian.sh` to sync all changes
+
 **NEW: Write to memory immediately after:**
 - Major decisions
 - New features built
