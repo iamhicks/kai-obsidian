@@ -80,3 +80,25 @@
 | EDGE | 🚫 Not started | High |
 | FLOW | 🚫 Not started | High |
 | VAULT | 🚫 Not started | High |
+
+## Future Projects (Post-Launch)
+
+### Mission Control Dashboard
+**Source:** Alex Finn recommendation (via X/Twitter, 07-02-2026)  
+**Status:** Deferred — revisit after i_am_Hicks product suite complete  
+**Priority:** After EDGE/FLOW/VAULT launched  
+
+**Purpose:** Monitor and manage OpenClaw activity  
+
+**Components:**
+1. **Activity feed** — Track every action OpenClaw takes (token visibility)
+2. **Calendar view** — Visual weekly view of all scheduled cron tasks
+3. **Global search** — Unified search across memories, tasks, documents, conversations
+
+**Tech Stack Options:**
+- Full version: NextJS + Convex + Codex (~22-32 hours)
+- Quick version: File-based logs + formatted cron list (~1-2 hours)
+
+**Decision:** Build quick version first, then full dashboard after products launched
+
+**Reference:** See `memory/07-02-2026.md` for full context
