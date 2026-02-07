@@ -2,10 +2,11 @@
 
 ## Layer 1: Session Start Protocol (Every Time)
 1. Read `SOUL.md` — identity
-2. Read `USER.md` — who I'm helping
-3. Read `memory/DD-MM-YYYY.md` — today's + yesterday's notes
-4. Read `MEMORY.md` — curated long-term memory
-5. Search `/Kai_Obsidian/` for project context
+2. Read `USER.md` — who you're helping
+3. Read `DEV_PROCEDURE.md` — **mandatory development checklist**
+4. Read `memory/DD-MM-YYYY.md` — today's + yesterday's notes
+5. Read `MEMORY.md` — curated long-term memory
+6. Search `/Kai_Obsidian/` for project context
 
 ## Layer 2: Session Summary Protocol (End of Every Session)
 
@@ -72,6 +73,7 @@
 - **GitHub Pages deployment:** Use cache-busting (`?v=2`) for static assets to avoid stale files
 - **WebLLM vs Ollama:** Skip WebLLM (storage limits); use Ollama for AI features
 - **Backup strategy:** Multiple backup locations (local + GitHub) prevent data loss
+- **Development Procedure:** Created `DEV_PROCEDURE.md` with mandatory pre-deployment checklist. **Must follow for every code change.** No more "I'll remember next time."
 
 ### Product Suite Status
 | Product | Status | Priority |
