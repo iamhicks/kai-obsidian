@@ -6,7 +6,8 @@
 3. Read `DEV_PROCEDURE.md` — **mandatory development checklist**
 4. Read `memory/DD-MM-YYYY.md` — today's + yesterday's notes
 5. Read `MEMORY.md` — curated long-term memory
-6. Search `/Kai_Obsidian/` for project context
+6. **Read `memory/pending-requests.md`** — incomplete user requests
+7. Search `/Kai_Obsidian/` for project context
 
 ## Layer 2: Session Summary Protocol (End of Every Session)
 
@@ -81,7 +82,8 @@
 | MIND | ✅ Working, needs Ollama | Medium |
 | EDGE | 🚫 Not started | High |
 | FLOW | 🚫 Not started | High |
-| VAULT | 🚫 Not started | High |
+| VAULT | 🚫 **On hold** — removed from website | — |
+| **Bundle** | **i_am Complete** | **$99** |
 
 ## Future Projects (Post-Launch)
 
@@ -104,3 +106,21 @@
 **Decision:** Build quick version first, then full dashboard after products launched
 
 **Reference:** See `memory/07-02-2026.md` for full context
+
+---
+
+## Critical Lessons
+
+### 07/02/2026 — Listen to User Intent
+**What went wrong:** Pete asked for MIND styling on FLOW/EDGE 3+ times over 2 days. I kept getting distracted by technical issues (cache problems, modular split) and asking "what style?" instead of acting on the clear request.
+
+**The fix:**
+1. **Stop and confirm** — When user mentions styling/UI/visual changes, stop everything and write it down
+2. **Log immediately** — Every feature request goes to `memory/pending-requests.md` right away
+3. **Self-check** — Before coding, ask: "Is this what Pete actually asked for?"
+4. **Prioritize user intent** — What they asked for > what I think needs fixing
+
+**System changes made:**
+- Created `memory/pending-requests.md` tracking file
+- Added pending requests check to Session Start Protocol
+- New DEV_PROCEDURE.md rule: "User Intent Capture" — confirm understanding before coding
