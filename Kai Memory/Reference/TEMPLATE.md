@@ -1,7 +1,11 @@
 # Session Summary Template
 
+**Save to:** `Kai Memory/Daily Sessions/DD-MM-YYYY.md`
+
+---
+
 ## Session Metadata
-**Date:** YYYY-MM-DD  
+**Date:** DD-MM-YYYY  
 **Duration:** [Hours/Minutes]  
 **Focus:** [Primary topic/task]  
 **Outcome:** [Success/Partial/Blocked]
