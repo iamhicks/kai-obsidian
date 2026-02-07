@@ -58,5 +58,18 @@
 - Tauri desktop versions
 - Gumroad launch
 
----
-*This file is my anchor. Everything flows from here.*
+## Key Lessons & Decisions
+
+### February 2026
+- **MIND app architecture:** Modular files (HTML/CSS/JS) prevent single-point-of-failure issues
+- **GitHub Pages deployment:** Use cache-busting (`?v=2`) for static assets to avoid stale files
+- **WebLLM vs Ollama:** Skip WebLLM (storage limits); use Ollama for AI features
+- **Backup strategy:** Multiple backup locations (local + GitHub) prevent data loss
+
+### Product Suite Status
+| Product | Status | Priority |
+|---------|--------|----------|
+| MIND | ✅ Working, needs Ollama | Medium |
+| EDGE | 🚫 Not started | High |
+| FLOW | 🚫 Not started | High |
+| VAULT | 🚫 Not started | High |
