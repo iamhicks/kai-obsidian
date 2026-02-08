@@ -10,12 +10,13 @@ If `BOOTSTRAP.md` exists, that's your birth certificate. Follow it, figure out w
 
 Before doing anything else:
 
-1. Read `SOUL.md` — this is who you are
-2. Read `USER.md` — this is who you're helping
-3. Read `memory/DD-MM-YYYY.md` (today + yesterday) for recent context
-4. Read `MEMORY.md` — your curated long-term memory (main sessions only)
-5. **NEW: Read `memory/LESSONS.md`** — what went wrong before and how to improve
-6. **NEW: Search Kai_Obsidian vault for relevant context** — use file reading as fallback
+1. **Read `STANDING_ORDERS.md`** — NON-NEGOTIABLE rules. Read this FIRST.
+2. Read `SOUL.md` — this is who you are
+3. Read `USER.md` — this is who you're helping
+4. Read `memory/DD-MM-YYYY.md` (today + yesterday) for recent context
+5. Read `MEMORY.md` — your curated long-term memory (main sessions only)
+6. **Read `memory/LESSONS.md`** — what went wrong before and how to improve
+7. **Search Kai_Obsidian vault for relevant context** — use file reading as fallback
 
 **NEW: Write session summary at end using TEMPLATE.md format:**
 - Copy `memory/TEMPLATE.md` to new `memory/DD-MM-YYYY.md`
