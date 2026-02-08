@@ -53,7 +53,16 @@ ls -la */index.html 2>/dev/null
 find . -name "index.html" -type f -exec wc -l {} \;
 ```
 
-**Rule 2: Check git history BEFORE making changes**
+**Rule 2: Use automated cache-busting for GitHub Pages**
+```bash
+# Always add version query string on deploy
+VERSION=$(date +%s)
+sed -i '' "s/?v=[0-9]*/?v=$VERSION/g" index.html
+
+# Or use the deploy script: ~/deploy-mind.sh
+```
+
+**Rule 3: Check git history BEFORE making changes**
 ```bash
 # Show ALL commits to ANY index.html
 git log --all --oneline -- "**/index.html"
