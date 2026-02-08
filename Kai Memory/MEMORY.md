@@ -73,6 +73,13 @@
 
 ## Key Lessons & Decisions
 
+### 08/02/2026 — Protocol System Created
+- **STANDING_ORDERS.md** — 10 non-negotiable operational rules (log everything, verify first, backup before destructive ops, etc.)
+- **PROTOCOL_COST_EFFICIENCY.md** — Three-Strike (stop after 3 failures), Scalpel (use grep/head/tail, not full reads), Ask Before Dig, Terse Output
+- **Session start order updated:** STANDING_ORDERS → PROTOCOL_COST_EFFICIENCY → SOUL → USER → memory
+- **Gateway watchdog created:** Auto-restart monitoring with logging
+- **MIND restored:** Version 501d995 (AI features + all bug fixes) after modular split failed 3 times
+
 ### February 2026
 - **MIND app architecture:** Modular files (HTML/CSS/JS) prevent single-point-of-failure issues
 - **GitHub Pages deployment:** Use cache-busting (`?v=2`) for static assets to avoid stale files
