@@ -47,25 +47,29 @@
 
 ## Current Project Context (Auto-Loaded)
 
-### 4-Product Suite: i_am_Hicks
-**Parent Brand:** "Define yourself"
+### i_am_Hicks Product Suite
+**Status:** Live with monochrome redesign
+**URL:** iamhicks.com
 
-| Product | Brand | Price | Location |
-|---------|-------|-------|----------|
-| Trading Journal | EDGE — i am Trading | $49 | `/TradingJournal/` |
-| TaskMaster | FLOW — i am Focus | $29 | `/TaskMaster/` |
-| Finance Tracker | VAULT — i am Wealth | $29 | `/FinanceTracker/` |
-| Knowledge Base | MIND — i am Clear | $29 | `/KnowledgeBase/` |
-| **Bundle** | **i_am Complete** | **$99** | — |
+**Products:**
+- **Mind_ai** — AI-powered notes & knowledge ($29)
+- **Flow_ai** — AI-powered task management ($29)
+- **Bundle** — Both apps ($49)
 
-### Deployed
-- `iamhicks.com` — Main landing page (EDGE/FLOW/VAULT/MIND marketing)
-- `iamhicks.com/mind-demo/` — MIND auto-resetting demo
+**Design System:**
+- Monochrome palette: #F1F1F1 (off-white), #1B1B1D (dark)
+- Typography: Fraunces (headings), Inter (body)
+- Flat buttons, no gradients, static waves
+- No animations (prevents rendering issues)
 
-### TBD
-- Deploy EDGE, FLOW, VAULT demos
-- Tauri desktop versions
-- Gumroad launch
+**Recent Changes (07-02-2026):**
+- Complete monochrome redesign
+- Removed product icons from cards
+- Tightened vertical spacing
+- Static wave dividers (removed animations)
+- Consistent button styling across all pages
+- Moved comparison section to Mind page
+- Added Markdown import/paste feature description
 
 ## Key Lessons & Decisions
 

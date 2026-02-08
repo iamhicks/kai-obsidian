@@ -119,6 +119,39 @@ git show COMMIT:path/to/file | wc -l
 
 ---
 
+---
+
+## Lesson: 08/02/2026 - Modular File Rule Not Enforced
+
+### What Went Wrong
+
+**I documented a rule in MEMORY.md but didn't make it mandatory in DEV_PROCEDURE.md**
+
+Feb 5: I wrote "MIND app architecture: Modular files prevent single-point-of-failure issues" in MEMORY.md
+Feb 8: Working on MIND/FLOW again, created single files because the rule wasn't in my procedure checklist
+
+**The mistake:** Documentation ≠ Enforcement
+- MEMORY.md is reference material (I might read it)
+- DEV_PROCEDURE.md is mandatory steps (I must follow it)
+- Rules only work if they're in the procedure I follow every session
+
+### The Fix (Done)
+
+Added to DEV_PROCEDURE.md:
+- **File Structure Rules (NON-NEGOTIABLE)** section
+- Single-file limit: Apps > 500 lines MUST be split
+- Mandatory checklist item before creating any new app
+- List of current apps requiring split (MIND, FLOW)
+
+### Prevention
+
+**Never assume "I wrote it down somewhere" means "I will follow it"**
+- If it's important enough to document, it belongs in DEV_PROCEDURE.md
+- Procedure checklist items get checked every session
+- Memory items get forgotten
+
+---
+
 ## Session: 05/02/2026 (Original Lessons)
 
 ### What Went Wrong
