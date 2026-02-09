@@ -13,15 +13,30 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Kai Memory/Reference/TEMPLATE.md",
+                "file": "Business/Marketing/Email Launch.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "TEMPLATE"
+              "title": "Email Launch"
+            }
+          },
+          {
+            "id": "ec90494f7a111bbd",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "RECOVERY/Kai_Recovery_Guide.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Kai_Recovery_Guide"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -183,44 +198,44 @@
       "bases:Create new base": false
     }
   },
-  "active": "48f92a1b88b877fc",
+  "active": "ec90494f7a111bbd",
   "lastOpenFiles": [
-    "Kai Memory/Daily Sessions/07-02-2026.md",
-    "Kai Memory/Reference/LESSONS.md",
-    "Kai Memory/Reference/README.md",
-    "Kai Memory/Daily Sessions/04-02-2026.md",
-    "Kai Memory/Daily Sessions/05-02-2026.md",
-    "Kai Memory/Daily Sessions/06-02-2026.md",
-    "Kai Memory/2026-02-05.md",
-    "Kai Memory/Reference/SYSTEM.md",
-    "Kai Memory/Reference/TEMPLATE.md",
-    "Kai Memory/Daily Sessions/03-02-2026.md",
-    "Kai Memory/Archive",
-    "Kai Memory/Reference",
-    "Kai Memory/Daily Sessions",
-    "Kai Memory/2026-02-06.md",
-    "Kai Memory/2026-02-03.md",
-    "Kai Memory/2026-02-04.md",
-    "Kai Memory/Backup & Recovery.md",
-    "Kai Memory/GitHub Backup Setup.md",
+    "RECOVERY/OpenClaw Recovery Guide.md",
+    "RECOVERY/Kai_Recovery_Guide.md",
+    "RECOVERY/Untitled.md",
+    "Kai Memory/HEARTBEAT.md",
+    "Kai Memory/pending-tasks.md",
+    "Kai Memory/backup-all.sh",
+    "Kai Memory/skills/website/SKILL.md",
+    "Kai Memory/skills/mind/SKILL.md",
+    "Kai Memory/skills/codebases/SKILL.md",
+    "Kai Memory/skills/website",
+    "Kai Memory/skills/mind",
+    "Kai Memory/skills/codebases",
+    "Kai Memory/skills",
     "Kai Memory/SOUL.md",
-    "Kai Memory/LESSONS.md",
+    "Kai Memory/TEMPLATE.md",
+    "SOUL.md",
+    "RECOVERY",
+    "Kai Memory/Backup & Recovery.md",
+    "Business/Marketing/Brand Identity & Values.md",
+    "Kai Memory/New Install",
+    "Kai Memory/Daily Sessions/08-02-2026.md",
     "Kai Memory/MEMORY.md",
-    "Kai Memory/Nightly Missions System.md",
-    "Kai Memory/Recovery After Crash.md",
-    "Kai Memory/TOOLS.md",
-    "Kai Memory/AGENTS.md",
-    "Trading-Journal-App/js/storage.js",
-    "Trading-Journal-App/js/charts.js",
-    "Trading-Journal-App/js/app.js",
-    "Trading-Journal-App/css/styles.css",
-    "Trading-Journal-App/templates.js",
-    "Trading-Journal-App/styles.css",
-    "Trading-Journal-App/storage.js",
-    "Trading-Journal-App/README.md",
-    "Business/Product_Ideas/App_Opportunities_Research_Feb_2026.md",
-    "Trading/Lessons from Others/4 Hour Profiling.md",
-    "Trading/Scripts/GxT Alerts/GxT_v1.0.md",
+    "Kai Memory/STANDING_ORDERS.md",
+    "Kai Memory/PROTOCOL_COST_EFFICIENCY.md",
+    "Kai Memory/Daily Sessions/07-02-2026.md",
+    "Kai Memory/DEV_PROCEDURE.md",
+    "Family/Education/Age 4-7 Learning Plan.md",
+    "Kai Memory/Reference/LESSONS.md",
+    "Business/Marketing/Revenue Strategy & Marketing Plan.md",
+    "Business/Marketing/MIND - Product Marketing.md",
+    "Business/Marketing/Marketing Plan.md",
+    "Business/Marketing/Ideal Customer Persona.md",
+    "Business/Marketing/Copy Bank.md",
+    "Family/Education",
+    "Family",
+    "Kai Memory/Archive",
     "Trading/Lessons from Others/images/4h-profile-image-6.jpg",
     "Trading/Lessons from Others/images/4h-profile-image-5.jpg",
     "Trading/Lessons from Others/images/4h-profile-image-4.jpg",
