@@ -1,0 +1,9 @@
+# Obsidian vault - ignore system files
+.DS_Store
+.obsidian/workspace.json
+.obsidian/plugins/*/data.json
+.trash/
+
+# Keep all markdown files and structure
+!*.md
+!*/
