@@ -1,0 +1,240 @@
+//@version=6
+indicator("GxT Alerts - Simplified", shorttitle="GxT Alerts", overlay=true, max_bars_back=500)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// GxT ALERTS - SIMPLIFIED VERSION
+// Based on TTrades Fractal Model
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════════════════════════════════
+// INPUTS
+// ══════════════════════════════════════════════════════════════════════════════
+
+// Timeframe Selection
+group_timeframe = "Timeframe Settings"
+show_1h_c2 = input.bool(true, "Show 1H C2 Alerts", group=group_timeframe)
+show_30m_c2 = input.bool(true, "Show 30M C2 Alerts", group=group_timeframe)
+show_1h_c3 = input.bool(true, "Show 1H C3 Alerts", group=group_timeframe)
+show_30m_c3 = input.bool(true, "Show 30M C3 Alerts", group=group_timeframe)
+
+// Candle Analysis Settings
+group_candles = "Candle Analysis"
+min_wick_ratio_c2 = input.float(0.3, "C2: Min Wick Ratio", minval=0.1, maxval=0.8, step=0.1, group=group_candles)
+min_body_ratio_c2 = input.float(0.4, "C2: Min Body Ratio", minval=0.2, maxval=0.8, step=0.1, group=group_candles)
+max_opposing_wick_c3 = input.float(0.2, "C3: Max Opposing Wick %", minval=0.05, maxval=0.5, step=0.05, group=group_candles)
+min_body_ratio_c3 = input.float(0.5, "C3: Min Body Ratio", minval=0.3, maxval=0.8, step=0.1, group=group_candles)
+close_to_extreme_c3 = input.float(0.15, "C3: Close to High/Low %", minval=0.05, maxval=0.3, step=0.05, group=group_candles)
+
+// Table Settings
+group_table = "Table Settings"
+show_table = input.bool(true, "Show Status Table", group=group_table)
+table_position = input.string("Top Right", "Table Position", options=["Top Right", "Top Left", "Bottom Right", "Bottom Left"], group=group_table)
+table_text_size = input.string("Small", "Table Text Size", options=["Tiny", "Small", "Normal"], group=group_table)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TABLE SIZE MAP
+// ══════════════════════════════════════════════════════════════════════════════
+table_size_map = table_text_size == "Tiny" ? size.tiny : table_text_size == "Small" ? size.small : size.normal
+
+// ══════════════════════════════════════════════════════════════════════════════
+// FUNCTIONS
+// ══════════════════════════════════════════════════════════════════════════════
+
+// Function to get higher timeframe candle data
+getHTFData(tf) =>
+    htf_open = request.security(syminfo.tickerid, tf, open, lookahead=barmerge.lookahead_off)
+    htf_high = request.security(syminfo.tickerid, tf, high, lookahead=barmerge.lookahead_off)
+    htf_low = request.security(syminfo.tickerid, tf, low, lookahead=barmerge.lookahead_off)
+    htf_close = request.security(syminfo.tickerid, tf, close, lookahead=barmerge.lookahead_off)
+    [htf_open, htf_high, htf_low, htf_close]
+
+// Function to detect C2 (Candle 2 - Continuation Setup)
+isC2(open_price, high_price, low_price, close_price, direction) =>
+    body_size = math.abs(close_price - open_price)
+    total_range = high_price - low_price
+    upper_wick = high_price - math.max(open_price, close_price)
+    lower_wick = math.min(open_price, close_price) - low_price
+    
+    // Bullish C2: Closes up, has lower wick (took liquidity), decent body
+    bull_c2 = direction == 1 and 
+              close_price > open_price and 
+              lower_wick >= body_size * min_wick_ratio_c2 and
+              body_size >= total_range * min_body_ratio_c2
+    
+    // Bearish C2: Closes down, has upper wick (took liquidity), decent body
+    bear_c2 = direction == -1 and 
+              close_price < open_price and 
+              upper_wick >= body_size * min_wick_ratio_c2 and
+              body_size >= total_range * min_body_ratio_c2
+    
+    bull_c2 ? 1 : bear_c2 ? -1 : 0
+
+// Function to detect C3 (Candle 3 - Confirmation Candle)
+// C3 is a strong closure candle with minimal opposing wick
+isC3(open_price, high_price, low_price, close_price, direction) =>
+    body_size = math.abs(close_price - open_price)
+    total_range = high_price - low_price
+    upper_wick = high_price - math.max(open_price, close_price)
+    lower_wick = math.min(open_price, close_price) - low_price
+    
+    // Bullish C3: Strong up close, minimal upper wick, closes near high
+    bull_c3 = direction == 1 and 
+              close_price > open_price and 
+              upper_wick <= body_size * max_opposing_wick_c3 and
+              body_size >= total_range * min_body_ratio_c3 and
+              close_price >= high_price - (total_range * close_to_extreme_c3)
+    
+    // Bearish C3: Strong down close, minimal lower wick, closes near low
+    bear_c3 = direction == -1 and 
+              close_price < open_price and 
+              lower_wick <= body_size * max_opposing_wick_c3 and
+              body_size >= total_range * min_body_ratio_c3 and
+              close_price <= low_price + (total_range * close_to_extreme_c3)
+    
+    bull_c3 ? 1 : bear_c3 ? -1 : 0
+
+// ══════════════════════════════════════════════════════════════════════════════
+// HIGHER TIMEFRAME DATA
+// ══════════════════════════════════════════════════════════════════════════════
+
+// Get 1H data
+[htf_1h_open, htf_1h_high, htf_1h_low, htf_1h_close] = getHTFData("60")
+
+// Get 30M data  
+[htf_30m_open, htf_30m_high, htf_30m_low, htf_30m_close] = getHTFData("30")
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TREND DIRECTION
+// ══════════════════════════════════════════════════════════════════════════════
+
+ema_fast = ta.ema(close, 10)
+trend_direction = close > ema_fast ? 1 : close < ema_fast ? -1 : 0
+
+// ══════════════════════════════════════════════════════════════════════════════
+// C2/C3 DETECTION
+// ══════════════════════════════════════════════════════════════════════════════
+
+// 1H C2/C3 detection
+var int c2_1h_dir = 0
+var int c3_1h_dir = 0
+
+if barstate.isconfirmed
+    c2_1h_dir := isC2(htf_1h_open, htf_1h_high, htf_1h_low, htf_1h_close, trend_direction)
+    c3_1h_dir := isC3(htf_1h_open, htf_1h_high, htf_1h_low, htf_1h_close, trend_direction)
+
+// 30M C2/C3 detection
+var int c2_30m_dir = 0
+var int c3_30m_dir = 0
+
+if barstate.isconfirmed
+    c2_30m_dir := isC2(htf_30m_open, htf_30m_high, htf_30m_low, htf_30m_close, trend_direction)
+    c3_30m_dir := isC3(htf_30m_open, htf_30m_high, htf_30m_low, htf_30m_close, trend_direction)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PLOTTING - C2/C3 LABELS ONLY
+// ══════════════════════════════════════════════════════════════════════════════
+
+// C2 Labels (Yellow)
+plotshape(show_1h_c2 and c2_1h_dir == 1 and c2_1h_dir[1] == 0, 
+         title="1H C2 Bull", location=location.abovebar, color=color.yellow, 
+         style=shape.labelup, size=size.small, text="1H C2")
+plotshape(show_1h_c2 and c2_1h_dir == -1 and c2_1h_dir[1] == 0, 
+         title="1H C2 Bear", location=location.belowbar, color=color.yellow, 
+         style=shape.labeldown, size=size.small, text="1H C2")
+
+plotshape(show_30m_c2 and c2_30m_dir == 1 and c2_30m_dir[1] == 0, 
+         title="30M C2 Bull", location=location.abovebar, color=color.yellow, 
+         style=shape.labelup, size=size.small, text="30M C2")
+plotshape(show_30m_c2 and c2_30m_dir == -1 and c2_30m_dir[1] == 0, 
+         title="30M C2 Bear", location=location.belowbar, color=color.yellow, 
+         style=shape.labeldown, size=size.small, text="30M C2")
+
+// C3 Labels (Orange) - LARGER/MORE VISIBLE
+plotshape(show_1h_c3 and c3_1h_dir == 1 and c3_1h_dir[1] == 0, 
+         title="1H C3 Bull", location=location.abovebar, color=color.orange, 
+         style=shape.labelup, size=size.normal, text="1H C3")
+plotshape(show_1h_c3 and c3_1h_dir == -1 and c3_1h_dir[1] == 0, 
+         title="1H C3 Bear", location=location.belowbar, color=color.orange, 
+         style=shape.labeldown, size=size.normal, text="1H C3")
+
+plotshape(show_30m_c3 and c3_30m_dir == 1 and c3_30m_dir[1] == 0, 
+         title="30M C3 Bull", location=location.abovebar, color=color.orange, 
+         style=shape.labelup, size=size.normal, text="30M C3")
+plotshape(show_30m_c3 and c3_30m_dir == -1 and c3_30m_dir[1] == 0, 
+         title="30M C3 Bear", location=location.belowbar, color=color.orange, 
+         style=shape.labeldown, size=size.normal, text="30M C3")
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ALERTS - C2/C3 ONLY
+// ══════════════════════════════════════════════════════════════════════════════
+
+// C2 Alerts
+alertcondition(show_1h_c2 and c2_1h_dir == 1 and c2_1h_dir[1] == 0, 
+              title="1H Bullish C2", 
+              message="🟡 1H Bullish C2 - Prepare for CISD")
+
+alertcondition(show_1h_c2 and c2_1h_dir == -1 and c2_1h_dir[1] == 0, 
+              title="1H Bearish C2", 
+              message="🟡 1H Bearish C2 - Prepare for CISD")
+
+alertcondition(show_30m_c2 and c2_30m_dir == 1 and c2_30m_dir[1] == 0, 
+              title="30M Bullish C2", 
+              message="🟡 30M Bullish C2 - Prepare for CISD")
+
+alertcondition(show_30m_c2 and c2_30m_dir == -1 and c2_30m_dir[1] == 0, 
+              title="30M Bearish C2", 
+              message="🟡 30M Bearish C2 - Prepare for CISD")
+
+// C3 Alerts
+alertcondition(show_1h_c3 and c3_1h_dir == 1 and c3_1h_dir[1] == 0, 
+              title="1H Bullish C3", 
+              message="🟠 1H Bullish C3 - CISD CONFIRMED")
+
+alertcondition(show_1h_c3 and c3_1h_dir == -1 and c3_1h_dir[1] == 0, 
+              title="1H Bearish C3", 
+              message="🟠 1H Bearish C3 - CISD CONFIRMED")
+
+alertcondition(show_30m_c3 and c3_30m_dir == 1 and c3_30m_dir[1] == 0, 
+              title="30M Bullish C3", 
+              message="🟠 30M Bullish C3 - CISD CONFIRMED")
+
+alertcondition(show_30m_c3 and c3_30m_dir == -1 and c3_30m_dir[1] == 0, 
+              title="30M Bearish C3", 
+              message="🟠 30M Bearish C3 - CISD CONFIRMED")
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TABLE SUMMARY
+// ══════════════════════════════════════════════════════════════════════════════
+
+// Table position mapping
+table_pos = table_position == "Top Right" ? position.top_right :
+            table_position == "Top Left" ? position.top_left :
+            table_position == "Bottom Right" ? position.bottom_right :
+            position.bottom_left
+
+var table info_table = table.new(table_pos, 2, 6, bgcolor=color.new(color.black, 80), 
+                                 border_width=1, border_color=color.gray)
+
+if barstate.islast and show_table
+    table.cell(info_table, 0, 0, "TF", text_color=color.white, text_size=table_size_map)
+    table.cell(info_table, 1, 0, "Signal", text_color=color.white, text_size=table_size_map)
+    
+    table.cell(info_table, 0, 1, "1H C2", text_color=color.white, text_size=table_size_map)
+    table.cell(info_table, 1, 1, c2_1h_dir == 1 ? "🟢 BULL" : c2_1h_dir == -1 ? "🔴 BEAR" : "—", 
+              text_color=c2_1h_dir == 1 ? color.green : c2_1h_dir == -1 ? color.red : color.gray, text_size=table_size_map)
+    
+    table.cell(info_table, 0, 2, "1H C3", text_color=color.white, text_size=table_size_map)
+    table.cell(info_table, 1, 2, c3_1h_dir == 1 ? "🟢 BULL" : c3_1h_dir == -1 ? "🔴 BEAR" : "—", 
+              text_color=c3_1h_dir == 1 ? color.green : c3_1h_dir == -1 ? color.red : color.gray, text_size=table_size_map)
+    
+    table.cell(info_table, 0, 3, "30M C2", text_color=color.white, text_size=table_size_map)
+    table.cell(info_table, 1, 3, c2_30m_dir == 1 ? "🟢 BULL" : c2_30m_dir == -1 ? "🔴 BEAR" : "—", 
+              text_color=c2_30m_dir == 1 ? color.green : c2_30m_dir == -1 ? color.red : color.gray, text_size=table_size_map)
+    
+    table.cell(info_table, 0, 4, "30M C3", text_color=color.white, text_size=table_size_map)
+    table.cell(info_table, 1, 4, c3_30m_dir == 1 ? "🟢 BULL" : c3_30m_dir == -1 ? "🔴 BEAR" : "—", 
+              text_color=c3_30m_dir == 1 ? color.green : c3_30m_dir == -1 ? color.red : color.gray, text_size=table_size_map)
+    
+    table.cell(info_table, 0, 5, "Trend", text_color=color.white, text_size=table_size_map)
+    table.cell(info_table, 1, 5, trend_direction == 1 ? "🟢 UP" : trend_direction == -1 ? "🔴 DOWN" : "⚪ FLAT", 
+              text_color=trend_direction == 1 ? color.green : trend_direction == -1 ? color.red : color.gray, text_size=table_size_map)
