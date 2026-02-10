@@ -1,56 +1,41 @@
 {
   "main": {
-    "id": "38c4c87640ed7040",
+    "id": "8a96c67c5fd9cad6",
     "type": "split",
     "children": [
       {
-        "id": "109827915994fa31",
+        "id": "7a20885c0c80673f",
         "type": "tabs",
         "children": [
           {
-            "id": "0642d76b8522f177",
+            "id": "d586c8665d0172b9",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Business/Marketing/Email Launch.md",
+                "file": "Kai Memory/Backup & Recovery.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Email Launch"
-            }
-          },
-          {
-            "id": "ec90494f7a111bbd",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "RECOVERY/Kai_Recovery_Guide.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Kai_Recovery_Guide"
+              "title": "Backup & Recovery"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
   },
   "left": {
-    "id": "7f444b23e8191e26",
+    "id": "4e04c22c50b637cc",
     "type": "split",
     "children": [
       {
-        "id": "8e574b33a4ebeca1",
+        "id": "78bbd5d6e320565b",
         "type": "tabs",
         "children": [
           {
-            "id": "48f92a1b88b877fc",
+            "id": "d94c7f02d483af87",
             "type": "leaf",
             "state": {
               "type": "file-explorer",
@@ -63,7 +48,7 @@
             }
           },
           {
-            "id": "0d87296a0000de32",
+            "id": "af0a5e2534bfab23",
             "type": "leaf",
             "state": {
               "type": "search",
@@ -80,7 +65,7 @@
             }
           },
           {
-            "id": "978894dcef81a39d",
+            "id": "c8407c71c7992107",
             "type": "leaf",
             "state": {
               "type": "bookmarks",
@@ -96,20 +81,20 @@
     "width": 300
   },
   "right": {
-    "id": "06f9acab9bd1ff75",
+    "id": "25788b16111406d7",
     "type": "split",
     "children": [
       {
-        "id": "df80506924856430",
+        "id": "688687275b5564a9",
         "type": "tabs",
         "children": [
           {
-            "id": "0cf15372bd50b230",
+            "id": "9c2265709a47e449",
             "type": "leaf",
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Tasks/Kanban.md",
+                "file": "Kai Memory/Backup & Recovery.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -119,25 +104,25 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for Kanban"
+              "title": "Backlinks for Backup & Recovery"
             }
           },
           {
-            "id": "3e660b2d5356b398",
+            "id": "dcb5b6f5d81b18e3",
             "type": "leaf",
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Tasks/Kanban.md",
+                "file": "Kai Memory/Backup & Recovery.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from Kanban"
+              "title": "Outgoing links from Backup & Recovery"
             }
           },
           {
-            "id": "96951b09262c04a8",
+            "id": "70009883c347bff7",
             "type": "leaf",
             "state": {
               "type": "tag",
@@ -152,7 +137,7 @@
             }
           },
           {
-            "id": "4c3a5a086de392e8",
+            "id": "22a2ff5d1503c1c6",
             "type": "leaf",
             "state": {
               "type": "all-properties",
@@ -166,18 +151,18 @@
             }
           },
           {
-            "id": "6a70e94936a350c1",
+            "id": "8f36316143cce186",
             "type": "leaf",
             "state": {
               "type": "outline",
               "state": {
-                "file": "Tasks/Kanban.md",
+                "file": "Kai Memory/Backup & Recovery.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Kanban"
+              "title": "Outline of Backup & Recovery"
             }
           }
         ]
@@ -198,53 +183,53 @@
       "bases:Create new base": false
     }
   },
-  "active": "ec90494f7a111bbd",
+  "active": "d586c8665d0172b9",
   "lastOpenFiles": [
-    "RECOVERY/OpenClaw Recovery Guide.md",
-    "RECOVERY/Kai_Recovery_Guide.md",
-    "RECOVERY/Untitled.md",
-    "Kai Memory/HEARTBEAT.md",
-    "Kai Memory/pending-tasks.md",
-    "Kai Memory/backup-all.sh",
-    "Kai Memory/skills/website/SKILL.md",
-    "Kai Memory/skills/mind/SKILL.md",
-    "Kai Memory/skills/codebases/SKILL.md",
-    "Kai Memory/skills/website",
-    "Kai Memory/skills/mind",
-    "Kai Memory/skills/codebases",
-    "Kai Memory/skills",
-    "Kai Memory/SOUL.md",
-    "Kai Memory/TEMPLATE.md",
-    "SOUL.md",
-    "RECOVERY",
-    "Kai Memory/Backup & Recovery.md",
-    "Business/Marketing/Brand Identity & Values.md",
-    "Kai Memory/New Install",
-    "Kai Memory/Daily Sessions/08-02-2026.md",
-    "Kai Memory/MEMORY.md",
-    "Kai Memory/STANDING_ORDERS.md",
-    "Kai Memory/PROTOCOL_COST_EFFICIENCY.md",
-    "Kai Memory/Daily Sessions/07-02-2026.md",
-    "Kai Memory/DEV_PROCEDURE.md",
-    "Family/Education/Age 4-7 Learning Plan.md",
-    "Kai Memory/Reference/LESSONS.md",
-    "Business/Marketing/Revenue Strategy & Marketing Plan.md",
-    "Business/Marketing/MIND - Product Marketing.md",
-    "Business/Marketing/Marketing Plan.md",
-    "Business/Marketing/Ideal Customer Persona.md",
-    "Business/Marketing/Copy Bank.md",
-    "Family/Education",
-    "Family",
-    "Kai Memory/Archive",
+    "10-02-26/1040/Trading-Journal-App/storage.js",
+    "10-02-26/1040/Trading-Journal-App/app.js",
+    "10-02-26/1040/Trading-Journal-App/templates.js",
+    "10-02-26/1040/Trading-Journal-App/statistics.js",
+    "10-02-26/1040/Trading-Journal-App/README.md",
+    "10-02-26/1040/Trading-Journal-App/accounts.js",
+    "10-02-26/1040/Trading-Journal-App/mistakes.js",
+    "10-02-26/1040/Trading-Journal-App/js/storage.js",
+    "10-02-26/1040/Trading-Journal-App/js/charts.js",
+    "10-02-26/1040/Trading-Journal-App/js/app.js",
+    "10-02-26/1040/Trading-Journal-App/css/styles.css",
+    "10-02-26/1040/Trading-Journal-App/styles.css",
+    "10-02-26/1040/Trading/TTrades Model/TTrades Video Transcriptions Library.md",
+    "10-02-26/1040/Trading/TTrades Model/TTrades Model Complete Guide.md",
+    "10-02-26/1040/Trading/TTrades Model/TTrades Model - Key Insights from Transcripts.md",
+    "10-02-26/1040/Trading/TTrades Model/Protected Swings.md",
+    "10-02-26/1040/Trading/TTrades Model/CISD - Change In State of Delivery.md",
+    "10-02-26/1040/Trading/TTrades Model/C3 - Candle 3 Confirmation.md",
+    "10-02-26/1040/Trading/GxT Model/SMT Divergence - Smart Money Tool.md",
+    "10-02-26/1040/Trading/GxT Model/GxT Video Transcription Progress.md",
+    "10-02-26/1040/Trading/GxT Model/GxT Asset Sync Part 1 Summary.md",
+    "10-02-26/1040/Trading/GxT Model/2-Stage Crack.md",
+    "10-02-26/1040/Trading/Chart Analyses/Chart Analysis Template.md",
+    "10-02-26/1040/Trading/Chart Analyses/Chart Analysis Library.md",
+    "10-02-26/1040/Trading/Chart Analyses/Chart Analysis - Example 1 - US100 - 4H C3 Bearish Setup.md",
+    "10-02-26/1040/Trading/Chart Analyses/Chart Analysis - Example 1 - 4H PO3 Setup.md",
+    "10-02-26/1040/Trading/Chart Analyses/Chart Analysis - 2026-02-03 - GC Gold - 4H C3 Bullish Continuation.md",
+    "10-02-26/1040/Trading/Model Research.md",
+    "10-02-26/1040/Trading/Scripts/GxT Alerts/GxT_v1.0.md",
+    "10-02-26/1040/Trading/Trading Rules.md",
+    "10-02-26/1040/Trading/Trading Rules 1/Pete's Trading Rules - Unified Model.md",
+    "10-02-26/1040/Trading/Chart Analysis Template.md",
+    "10-02-26/1040/Trading/Lessons from Others/images/4h-profile-image-2.jpg",
+    "10-02-26/1040/Trading/Lessons from Others/images/4h-profile-image-3.jpg",
+    "10-02-26/1040/Trading/Lessons from Others/images/4h-profile-image-6.jpg",
+    "10-02-26/1040/Trading/Lessons from Others/images/4h-profile-image-5.jpg",
+    "10-02-26/1040/Trading/Lessons from Others/images/4h-profile-image-4.jpg",
+    "10-02-26/1040/Trading/Lessons from Others/images/4h-profile-image-1.jpg",
+    "10-02-26/1040/Trading/Lessons from Others/4 Hour Profiling.md",
+    "10-02-26/1040/Trading/Journal/Trading Journal.md",
+    "10-02-26/1040/Trading/Journal/Journal Entry Template.md",
+    "10-02-26/1040/Tasks/Pete Board.md",
     "Trading/Lessons from Others/images/4h-profile-image-6.jpg",
     "Trading/Lessons from Others/images/4h-profile-image-5.jpg",
     "Trading/Lessons from Others/images/4h-profile-image-4.jpg",
-    "Trading/Lessons from Others/images/4h-profile-image-3.jpg",
-    "Trading/Lessons from Others/images/4h-profile-image-2.jpg",
-    "Trading/Lessons from Others/images/4h-profile-image-1.jpg",
-    "Trading/Lessons from Others/4h-profile-image-6.jpg",
-    "Trading/Lessons from Others/4h-profile-image-5.jpg",
-    "Trading/Lessons from Others/4h-profile-image-4.jpg",
-    "Trading/Lessons from Others/4h-profile-image-3.jpg"
+    "Trading/Lessons from Others/images/4h-profile-image-3.jpg"
   ]
 }
