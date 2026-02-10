@@ -7,6 +7,9 @@
 # Ignore nested git repo
 Kai/
 
+# Ignore backup folders (dd-mm-yy pattern)
+[0-9][0-9]-[0-9][0-9]-[0-9][0-9]/
+
 # Keep all markdown files and structure
 !*.md
 !*/
