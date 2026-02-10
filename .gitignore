@@ -4,6 +4,9 @@
 .obsidian/plugins/*/data.json
 .trash/
 
+# Ignore nested git repo
+Kai/
+
 # Keep all markdown files and structure
 !*.md
 !*/
