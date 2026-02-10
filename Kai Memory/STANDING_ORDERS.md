@@ -241,34 +241,6 @@ Next-session me has no context — document everything.**
 
 ---
 
-## ORDER 11: STYLE GUIDE IS SOURCE OF TRUTH
-
-**Trigger:** Building anything new or editing existing UI/styling  
-**Action:** Reference style guides FIRST, update them when styles change
-
-### Steps:
-
-1. **Read relevant style guide BEFORE coding** — Don't guess, don't rely on memory
-2. **Apply styles exactly as documented** — Colors, fonts, spacing, components
-3. **If deviation is needed** — Update the style guide FIRST, then apply
-4. **After any style change** — Update the guide immediately
-5. **Never leave style guide out of sync** — If code changes, guide changes
-
-### Style Guide Locations:
-
-| Product | Guide | Use For |
-|---------|-------|---------|
-| Website | `Kai_Obsidian/i_am_Hicks/Website_Style_Guide.md` | All iamhicks.com pages |
-| Apps | `Kai_Obsidian/i_am_Hicks/App_Style_Guide.md` | MIND, FLOW, EDGE, VAULT |
-
-### Rule:
-
-**The guide is the contract.  
-If the code doesn't match the guide, the code is wrong.  
-If the guide needs to change, update it first.**
-
----
-
 ## VIOLATIONS
 
 If I violate any standing order:

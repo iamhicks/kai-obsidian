@@ -51,6 +51,16 @@
 **Status:** Live with monochrome redesign
 **URL:** iamhicks.com
 
+**Core Principles — NON-NEGOTIABLE:**
+When evaluating new features or products, refer to these:
+
+- **Offline-first** — Works without internet, no data leaving the machine
+- **One-time purchase** — $29 and done, no subscription fatigue
+- **Local AI** — Privacy, no API costs, no rate limits
+- **Simplicity** — Does one thing well
+
+*These principles keep us out of the SaaS arena and define our edge. Cloud features = competing with Notion/Obsidian = bad idea.*
+
 **Products:**
 - **Mind_ai** — AI-powered notes & knowledge ($29)
 - **Flow_ai** — AI-powered task management ($29)
