@@ -1,0 +1,265 @@
+//@version=6
+indicator("GxT Alerts - Fractal Model", shorttitle="GxT Fractal", overlay=true, max_bars_back=500)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// GxT ALERTS - FRACTAL MODEL (C1/C2/C3 SEQUENCE)
+// Based on TTrades Fractal Model + GxT Universal Model
+// 
+// C1 = Range established (accumulation)
+// C2 = Breaks C1 range but closes back inside (manipulation)  
+// C3 = Respects 50% of C2, small wick, expansion (distribution)
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════════════════════════════════
+// INPUTS
+// ══════════════════════════════════════════════════════════════════════════════
+
+group_timeframe = "Timeframe Settings"
+show_1h_c2 = input.bool(true, "Show 1H C2 Alerts", group=group_timeframe)
+show_30m_c2 = input.bool(true, "Show 30M C2 Alerts", group=group_timeframe)
+show_1h_c3 = input.bool(true, "Show 1H C3 Alerts", group=group_timeframe)
+show_30m_c3 = input.bool(true, "Show 30M C3 Alerts", group=group_timeframe)
+
+group_logic = "C2/C3 Logic"
+c2_breakout_pct = input.float(0.3, "C2: Min breakout beyond C1 (% of C1 range)", minval=0.1, maxval=1.0, step=0.1, group=group_logic)
+c3_respect_pct = input.float(0.5, "C3: Must respect 50% of C2 candle", minval=0.3, maxval=0.8, step=0.1, group=group_logic)
+c3_min_body_pct = input.float(0.6, "C3: Min body size (% of range)", minval=0.4, maxval=0.9, step=0.1, group=group_logic)
+
+group_table = "Table Settings"
+show_table = input.bool(true, "Show Status Table", group=group_table)
+table_position = input.string("Top Right", "Table Position", options=["Top Right", "Top Left", "Bottom Right", "Bottom Left"], group=group_table)
+table_text_size = input.string("Small", "Table Text Size", options=["Tiny", "Small", "Normal"], group=group_table)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TABLE SIZE MAP
+// ══════════════════════════════════════════════════════════════════════════════
+table_size_map = table_text_size == "Tiny" ? size.tiny : table_text_size == "Small" ? size.small : size.normal
+
+// ══════════════════════════════════════════════════════════════════════════════
+// FUNCTIONS
+// ══════════════════════════════════════════════════════════════════════════════
+
+// Get higher timeframe data
+getHTFData(tf) =>
+    htf_open = request.security(syminfo.tickerid, tf, open, lookahead=barmerge.lookahead_off)
+    htf_high = request.security(syminfo.tickerid, tf, high, lookahead=barmerge.lookahead_off)
+    htf_low = request.security(syminfo.tickerid, tf, low, lookahead=barmerge.lookahead_off)
+    htf_close = request.security(syminfo.tickerid, tf, close, lookahead=barmerge.lookahead_off)
+    [htf_open, htf_high, htf_low, htf_close]
+
+// Detect C2 candle: Breaks C1 range but closes back inside
+// c1_high, c1_low = the range of C1 (2 bars ago)
+// c2_high, c2_low, c2_close = current candle being evaluated
+isC2(c1_high, c1_low, c2_high, c2_low, c2_close) =>
+    c1_range = c1_high - c1_low
+    
+    // Bullish C2: Breaks below C1 low, then closes back inside C1 range
+    bull_c2 = c2_low < c1_low and 
+              c2_close > c1_low and 
+              c2_close <= c1_high and
+              (c1_low - c2_low) >= c1_range * c2_breakout_pct
+    
+    // Bearish C2: Breaks above C1 high, then closes back inside C1 range  
+    bear_c2 = c2_high > c1_high and 
+              c2_close < c1_high and 
+              c2_close >= c1_low and
+              (c2_high - c1_high) >= c1_range * c2_breakout_pct
+    
+    bull_c2 ? 1 : bear_c2 ? -1 : 0
+
+// Detect C3 candle: Respects 50% of C2, strong body, expansion
+// c2_high, c2_low, c2_open, c2_close = C2 candle data (1 bar ago)
+// c3_high, c3_low, c3_open, c3_close = current candle being evaluated
+isC3(c2_high, c2_low, c2_open, c2_close, c3_high, c3_low, c3_open, c3_close, c2_direction) =>
+    c2_range = c2_high - c2_low
+    c2_mid = (c2_high + c2_low) / 2
+    c3_range = c3_high - c3_low
+    c3_body = math.abs(c3_close - c3_open)
+    
+    upper_wick = c3_high - math.max(c3_open, c3_close)
+    lower_wick = math.min(c3_open, c3_close) - c3_low
+    
+    // Bullish C3: Respects C2 lower 50%, closes up strong, minimal upper wick
+    bull_c3 = c2_direction == 1 and 
+              c3_low >= c2_mid and  // Respects 50% of C2 (lower half)
+              c3_close > c3_open and  // Closes up
+              c3_body >= c3_range * c3_min_body_pct and  // Strong body
+              upper_wick <= c3_body * 0.2  // Minimal upper wick
+    
+    // Bearish C3: Respects C2 upper 50%, closes down strong, minimal lower wick
+    bear_c3 = c2_direction == -1 and 
+              c3_high <= c2_mid and  // Respects 50% of C2 (upper half)
+              c3_close < c3_open and  // Closes down
+              c3_body >= c3_range * c3_min_body_pct and  // Strong body
+              lower_wick <= c3_body * 0.2  // Minimal lower wick
+    
+    bull_c3 ? 1 : bear_c3 ? -1 : 0
+
+// ══════════════════════════════════════════════════════════════════════════════
+// HIGHER TIMEFRAME DATA
+// ══════════════════════════════════════════════════════════════════════════════
+
+[htf_1h_open, htf_1h_high, htf_1h_low, htf_1h_close] = getHTFData("60")
+[htf_30m_open, htf_30m_high, htf_30m_low, htf_30m_close] = getHTFData("30")
+
+// ══════════════════════════════════════════════════════════════════════════════
+// C1/C2/C3 DETECTION FOR 1H
+// ══════════════════════════════════════════════════════════════════════════════
+
+var int c2_1h_dir = 0
+var int c3_1h_dir = 0
+
+if barstate.isconfirmed
+    // C1 = 2 bars ago, C2 = 1 bar ago, C3 = current
+    c1_high_1h = htf_1h_high[2]
+    c1_low_1h = htf_1h_low[2]
+    
+    c2_high_1h = htf_1h_high[1]
+    c2_low_1h = htf_1h_low[1]
+    c2_close_1h = htf_1h_close[1]
+    c2_open_1h = htf_1h_open[1]
+    
+    c3_high_1h = htf_1h_high
+    c3_low_1h = htf_1h_low
+    c3_open_1h = htf_1h_open
+    c3_close_1h = htf_1h_close
+    
+    // Detect C2 (based on C1 range)
+    c2_1h_dir := isC2(c1_high_1h, c1_low_1h, c2_high_1h, c2_low_1h, c2_close_1h)
+    
+    // Detect C3 (based on C2 candle, only if we had a C2)
+    c3_1h_dir := c2_1h_dir[1] != 0 ? isC3(c2_high_1h, c2_low_1h, c2_open_1h, c2_close_1h, 
+                                         c3_high_1h, c3_low_1h, c3_open_1h, c3_close_1h, c2_1h_dir[1]) : 0
+
+// ══════════════════════════════════════════════════════════════════════════════
+// C1/C2/C3 DETECTION FOR 30M
+// ══════════════════════════════════════════════════════════════════════════════
+
+var int c2_30m_dir = 0
+var int c3_30m_dir = 0
+
+if barstate.isconfirmed
+    // C1 = 2 bars ago, C2 = 1 bar ago, C3 = current
+    c1_high_30m = htf_30m_high[2]
+    c1_low_30m = htf_30m_low[2]
+    
+    c2_high_30m = htf_30m_high[1]
+    c2_low_30m = htf_30m_low[1]
+    c2_close_30m = htf_30m_close[1]
+    c2_open_30m = htf_30m_open[1]
+    
+    c3_high_30m = htf_30m_high
+    c3_low_30m = htf_30m_low
+    c3_open_30m = htf_30m_open
+    c3_close_30m = htf_30m_close
+    
+    // Detect C2 (based on C1 range)
+    c2_30m_dir := isC2(c1_high_30m, c1_low_30m, c2_high_30m, c2_low_30m, c2_close_30m)
+    
+    // Detect C3 (based on C2 candle, only if we had a C2)
+    c3_30m_dir := c2_30m_dir[1] != 0 ? isC3(c2_high_30m, c2_low_30m, c2_open_30m, c2_close_30m,
+                                           c3_high_30m, c3_low_30m, c3_open_30m, c3_close_30m, c2_30m_dir[1]) : 0
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PLOTTING
+// ══════════════════════════════════════════════════════════════════════════════
+
+// C2 Labels (Yellow) - Manipulation complete, prepare for entry
+plotshape(show_1h_c2 and c2_1h_dir == 1 and c2_1h_dir[1] == 0, 
+         title="1H C2 Bull", location=location.belowbar, color=color.yellow, 
+         style=shape.labelup, size=size.small, text="1H C2")
+plotshape(show_1h_c2 and c2_1h_dir == -1 and c2_1h_dir[1] == 0, 
+         title="1H C2 Bear", location=location.abovebar, color=color.yellow, 
+         style=shape.labeldown, size=size.small, text="1H C2")
+
+plotshape(show_30m_c2 and c2_30m_dir == 1 and c2_30m_dir[1] == 0, 
+         title="30M C2 Bull", location=location.belowbar, color=color.yellow, 
+         style=shape.labelup, size=size.small, text="30M C2")
+plotshape(show_30m_c2 and c2_30m_dir == -1 and c2_30m_dir[1] == 0, 
+         title="30M C2 Bear", location=location.abovebar, color=color.yellow, 
+         style=shape.labeldown, size=size.small, text="30M C2")
+
+// C3 Labels (Orange) - CISD CONFIRMED
+plotshape(show_1h_c3 and c3_1h_dir == 1 and c3_1h_dir[1] == 0, 
+         title="1H C3 Bull", location=location.belowbar, color=color.orange, 
+         style=shape.labelup, size=size.normal, text="1H C3")
+plotshape(show_1h_c3 and c3_1h_dir == -1 and c3_1h_dir[1] == 0, 
+         title="1H C3 Bear", location=location.abovebar, color=color.orange, 
+         style=shape.labeldown, size=size.normal, text="1H C3")
+
+plotshape(show_30m_c3 and c3_30m_dir == 1 and c3_30m_dir[1] == 0, 
+         title="30M C3 Bull", location=location.belowbar, color=color.orange, 
+         style=shape.labelup, size=size.normal, text="30M C3")
+plotshape(show_30m_c3 and c3_30m_dir == -1 and c3_30m_dir[1] == 0, 
+         title="30M C3 Bear", location=location.abovebar, color=color.orange, 
+         style=shape.labeldown, size=size.normal, text="30M C3")
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ALERTS
+// ══════════════════════════════════════════════════════════════════════════════
+
+// C2 Alerts - PREPARE FOR ENTRY
+alertcondition(show_1h_c2 and c2_1h_dir == 1 and c2_1h_dir[1] == 0, 
+              title="1H Bullish C2", 
+              message="🟡 1H Bullish C2 - Manipulation complete. Prepare for C3 long entry. C1 low swept, closed back inside.")
+
+alertcondition(show_1h_c2 and c2_1h_dir == -1 and c2_1h_dir[1] == 0, 
+              title="1H Bearish C2", 
+              message="🟡 1H Bearish C2 - Manipulation complete. Prepare for C3 short entry. C1 high swept, closed back inside.")
+
+alertcondition(show_30m_c2 and c2_30m_dir == 1 and c2_30m_dir[1] == 0, 
+              title="30M Bullish C2", 
+              message="🟡 30M Bullish C2 - Manipulation complete. Prepare for C3 long entry.")
+
+alertcondition(show_30m_c2 and c2_30m_dir == -1 and c2_30m_dir[1] == 0, 
+              title="30M Bearish C2", 
+              message="🟡 30M Bearish C2 - Manipulation complete. Prepare for C3 short entry.")
+
+// C3 Alerts - CISD CONFIRMED (Entry Signal)
+alertcondition(show_1h_c3 and c3_1h_dir == 1 and c3_1h_dir[1] == 0, 
+              title="1H Bullish C3 - CISD CONFIRMED", 
+              message="🟠 1H Bullish C3 - CISD CONFIRMED! Long entry valid. C3 respects C2 50%, expanding up.")
+
+alertcondition(show_1h_c3 and c3_1h_dir == -1 and c3_1h_dir[1] == 0, 
+              title="1H Bearish C3 - CISD CONFIRMED", 
+              message="🟠 1H Bearish C3 - CISD CONFIRMED! Short entry valid. C3 respects C2 50%, expanding down.")
+
+alertcondition(show_30m_c3 and c3_30m_dir == 1 and c3_30m_dir[1] == 0, 
+              title="30M Bullish C3 - CISD CONFIRMED", 
+              message="🟠 30M Bullish C3 - CISD CONFIRMED! Long entry valid.")
+
+alertcondition(show_30m_c3 and c3_30m_dir == -1 and c3_30m_dir[1] == 0, 
+              title="30M Bearish C3 - CISD CONFIRMED", 
+              message="🟠 30M Bearish C3 - CISD CONFIRMED! Short entry valid.")
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TABLE SUMMARY
+// ══════════════════════════════════════════════════════════════════════════════
+
+table_pos = table_position == "Top Right" ? position.top_right :
+            table_position == "Top Left" ? position.top_left :
+            table_position == "Bottom Right" ? position.bottom_right :
+            position.bottom_left
+
+var table info_table = table.new(table_pos, 2, 5, bgcolor=color.new(color.black, 80), 
+                                 border_width=1, border_color=color.gray)
+
+if barstate.islast and show_table
+    table.cell(info_table, 0, 0, "TF", text_color=color.white, text_size=table_size_map)
+    table.cell(info_table, 1, 0, "Signal", text_color=color.white, text_size=table_size_map)
+    
+    table.cell(info_table, 0, 1, "1H C2", text_color=color.white, text_size=table_size_map)
+    table.cell(info_table, 1, 1, c2_1h_dir == 1 ? "🟡 MANIP ↑" : c2_1h_dir == -1 ? "🟡 MANIP ↓" : "—", 
+              text_color=c2_1h_dir != 0 ? color.yellow : color.gray, text_size=table_size_map)
+    
+    table.cell(info_table, 0, 2, "1H C3", text_color=color.white, text_size=table_size_map)
+    table.cell(info_table, 1, 2, c3_1h_dir == 1 ? "🟠 CISD ↑" : c3_1h_dir == -1 ? "🟠 CISD ↓" : "—", 
+              text_color=c3_1h_dir != 0 ? color.orange : color.gray, text_size=table_size_map)
+    
+    table.cell(info_table, 0, 3, "30M C2", text_color=color.white, text_size=table_size_map)
+    table.cell(info_table, 1, 3, c2_30m_dir == 1 ? "🟡 MANIP ↑" : c2_30m_dir == -1 ? "🟡 MANIP ↓" : "—", 
+              text_color=c2_30m_dir != 0 ? color.yellow : color.gray, text_size=table_size_map)
+    
+    table.cell(info_table, 0, 4, "30M C3", text_color=color.white, text_size=table_size_map)
+    table.cell(info_table, 1, 4, c3_30m_dir == 1 ? "🟠 CISD ↑" : c3_30m_dir == -1 ? "🟠 CISD ↓" : "—", 
+              text_color=c3_30m_dir != 0 ? color.orange : color.gray, text_size=table_size_map)
