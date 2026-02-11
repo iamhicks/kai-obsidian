@@ -1,0 +1,129 @@
+//@version=6
+indicator("GxT Alerts - C2 Detection", shorttitle="GxT C2", overlay=true, max_bars_back=500)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// GxT ALERTS - C2 DETECTION 
+// 
+// C1 = Previous candle range (1 bar ago)
+// C2 = Current candle - ANY wick outside C1, closes back inside → VALID C2
+// Trader decides: Small wick = immediate entry | Large wick = wait for C3
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════════════════════════════════
+// INPUTS
+// ══════════════════════════════════════════════════════════════════════════════
+
+group_timeframe = "Timeframe Settings"
+show_1h_c2 = input.bool(true, "Show 1H C2 Alerts", group=group_timeframe)
+show_30m_c2 = input.bool(true, "Show 30M C2 Alerts", group=group_timeframe)
+show_4h_c2 = input.bool(true, "Show 4H C2 Alerts", group=group_timeframe)
+
+group_logic = "C2 Detection"
+// NO BREAKOUT % - C2 is valid with ANY size wick as long as it closes inside
+show_debug = input.bool(false, "Show C1 range lines", group=group_logic)
+
+group_table = "Table"
+show_table = input.bool(true, "Show Table", group=group_table)
+table_position = input.string("Top Right", "Position", options=["Top Right", "Top Left", "Bottom Right", "Bottom Left"], group=group_table)
+table_text_size = input.string("Small", "Text Size", options=["Tiny", "Small", "Normal"], group=group_table)
+
+// ══════════════════════════════════════════════════════════════════════════════
+table_size_map = table_text_size == "Tiny" ? size.tiny : table_text_size == "Small" ? size.small : size.normal
+
+// ══════════════════════════════════════════════════════════════════════════════
+// FUNCTIONS
+// ══════════════════════════════════════════════════════════════════════════════
+
+getHTFData(tf) =>
+    htf_open = request.security(syminfo.tickerid, tf, open, lookahead=barmerge.lookahead_off)
+    htf_high = request.security(syminfo.tickerid, tf, high, lookahead=barmerge.lookahead_off)
+    htf_low = request.security(syminfo.tickerid, tf, low, lookahead=barmerge.lookahead_off)
+    htf_close = request.security(syminfo.tickerid, tf, close, lookahead=barmerge.lookahead_off)
+    [htf_open, htf_high, htf_low, htf_close]
+
+// C2 Detection: ANY wick outside C1 range + close back inside = VALID C2
+isC2(c1_high, c1_low, c2_high, c2_low, c2_close) =>
+    // Bullish C2: ANY wick below C1 low (takes liquidity), close back inside C1
+    wick_below = c2_low < c1_low
+    closed_inside_bull = c2_close > c1_low and c2_close < c1_high
+    bull_c2 = wick_below and closed_inside_bull
+    
+    // Bearish C2: ANY wick above C1 high (takes liquidity), close back inside C1
+    wick_above = c2_high > c1_high
+    closed_inside_bear = c2_close < c1_high and c2_close > c1_low
+    bear_c2 = wick_above and closed_inside_bear
+    
+    bull_c2 ? 1 : bear_c2 ? -1 : 0
+
+// ══════════════════════════════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════════════════════════════
+
+[htf_1h_open, htf_1h_high, htf_1h_low, htf_1h_close] = getHTFData("60")
+[htf_30m_open, htf_30m_high, htf_30m_low, htf_30m_close] = getHTFData("30")
+[htf_4h_open, htf_4h_high, htf_4h_low, htf_4h_close] = getHTFData("240")
+
+// ══════════════════════════════════════════════════════════════════════════════
+// C2 DETECTION
+// ══════════════════════════════════════════════════════════════════════════════
+
+var int c2_1h_dir = 0
+if barstate.isconfirmed
+    c2_1h_dir := isC2(htf_1h_high[1], htf_1h_low[1], htf_1h_high, htf_1h_low, htf_1h_close)
+
+var int c2_30m_dir = 0
+if barstate.isconfirmed
+    c2_30m_dir := isC2(htf_30m_high[1], htf_30m_low[1], htf_30m_high, htf_30m_low, htf_30m_close)
+
+var int c2_4h_dir = 0
+if barstate.isconfirmed
+    c2_4h_dir := isC2(htf_4h_high[1], htf_4h_low[1], htf_4h_high, htf_4h_low, htf_4h_close)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PLOTTING
+// ══════════════════════════════════════════════════════════════════════════════
+
+// 1H C2
+plotshape(show_1h_c2 and c2_1h_dir == 1, title="1H C2 Bull", location=location.belowbar, color=color.yellow, style=shape.labelup, size=size.small, text="1H")
+plotshape(show_1h_c2 and c2_1h_dir == -1, title="1H C2 Bear", location=location.abovebar, color=color.yellow, style=shape.labeldown, size=size.small, text="1H")
+
+// 30M C2
+plotshape(show_30m_c2 and c2_30m_dir == 1, title="30M C2 Bull", location=location.belowbar, color=color.new(color.yellow, 30), style=shape.labelup, size=size.tiny, text="30M")
+plotshape(show_30m_c2 and c2_30m_dir == -1, title="30M C2 Bear", location=location.abovebar, color=color.new(color.yellow, 30), style=shape.labeldown, size=size.tiny, text="30M")
+
+// 4H C2
+plotshape(show_4h_c2 and c2_4h_dir == 1, title="4H C2 Bull", location=location.belowbar, color=color.new(color.orange, 50), style=shape.labelup, size=size.normal, text="4H C2")
+plotshape(show_4h_c2 and c2_4h_dir == -1, title="4H C2 Bear", location=location.abovebar, color=color.new(color.orange, 50), style=shape.labeldown, size=size.normal, text="4H C2")
+
+// Debug lines
+plot(show_debug ? htf_1h_high[1] : na, title="C1 High", color=color.gray, style=plot.style_linebr)
+plot(show_debug ? htf_1h_low[1] : na, title="C1 Low", color=color.gray, style=plot.style_linebr)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ALERTS
+// ══════════════════════════════════════════════════════════════════════════════
+
+alertcondition(show_1h_c2 and c2_1h_dir == 1, title="1H Bullish C2", message="🟡 1H BULLISH C2! Wick below C1, closed inside. Check wick size: Small=immediate entry, Large=wait for C3.")
+alertcondition(show_1h_c2 and c2_1h_dir == -1, title="1H Bearish C2", message="🟡 1H BEARISH C2! Wick above C1, closed inside. Check wick size: Small=immediate entry, Large=wait for C3.")
+alertcondition(show_30m_c2 and c2_30m_dir == 1, title="30M Bullish C2", message="🟡 30M BULLISH C2! Prepare for entry.")
+alertcondition(show_30m_c2 and c2_30m_dir == -1, title="30M Bearish C2", message="🟡 30M BEARISH C2! Prepare for entry.")
+alertcondition(show_4h_c2 and c2_4h_dir == 1, title="4H Bullish C2", message="🟠 4H BULLISH C2! Check wick: Small=look for 1H/30M C3 inside, Large=wait for 4H C3 then 1H/30M C3.")
+alertcondition(show_4h_c2 and c2_4h_dir == -1, title="4H Bearish C2", message="🟠 4H BEARISH C2! Check wick: Small=look for 1H/30M C3 inside, Large=wait for 4H C3 then 1H/30M C3.")
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TABLE
+// ══════════════════════════════════════════════════════════════════════════════
+
+table_pos = table_position == "Top Right" ? position.top_right : table_position == "Top Left" ? position.top_left : table_position == "Bottom Right" ? position.bottom_right : position.bottom_left
+
+var table info_table = table.new(table_pos, 2, 4, bgcolor=color.new(color.black, 80), border_width=1, border_color=color.gray)
+
+if barstate.islast and show_table
+    table.cell(info_table, 0, 0, "TF", text_color=color.white, text_size=table_size_map)
+    table.cell(info_table, 1, 0, "C2 Status", text_color=color.white, text_size=table_size_map)
+    table.cell(info_table, 0, 1, "4H", text_color=color.white, text_size=table_size_map)
+    table.cell(info_table, 1, 1, c2_4h_dir == 1 ? "🟠 BULL" : c2_4h_dir == -1 ? "🟠 BEAR" : "—", text_color=c2_4h_dir != 0 ? color.orange : color.gray, text_size=table_size_map)
+    table.cell(info_table, 0, 2, "1H", text_color=color.white, text_size=table_size_map)
+    table.cell(info_table, 1, 2, c2_1h_dir == 1 ? "🟡 BULL" : c2_1h_dir == -1 ? "🟡 BEAR" : "—", text_color=c2_1h_dir != 0 ? color.yellow : color.gray, text_size=table_size_map)
+    table.cell(info_table, 0, 3, "30M", text_color=color.white, text_size=table_size_map)
+    table.cell(info_table, 1, 3, c2_30m_dir == 1 ? "🟡 BULL" : c2_30m_dir == -1 ? "🟡 BEAR" : "—", text_color=c2_30m_dir != 0 ? color.yellow : color.gray, text_size=table_size_map)
