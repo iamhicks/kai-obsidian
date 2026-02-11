@@ -1,0 +1,201 @@
+//@version=6
+indicator("GxT Alerts - C2/C3 Sequence", shorttitle="GxT C2C3", overlay=true, max_bars_back=500)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// GxT ALERTS - C2/C3 SEQUENCE (Alert on C2 close, watch for C3)
+// 
+// C1 = Reference candle (2 bars ago)
+// C2 = Current candle - breaks C1 range, closes back inside → ALERT HERE
+// C3 = Next candle - respects 50% of C2, expansion (manual entry decision)
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════════════════════════════════
+// INPUTS
+// ══════════════════════════════════════════════════════════════════════════════
+
+group_timeframe = "Timeframe Settings"
+show_1h_c2 = input.bool(true, "Show 1H C2 Alerts", group=group_timeframe)
+show_30m_c2 = input.bool(true, "Show 30M C2 Alerts", group=group_timeframe)
+
+group_logic = "C2 Detection Settings"
+c2_breakout_pct = input.float(0.2, "Min breakout beyond C1 (% of C1 range)", minval=0.05, maxval=0.5, step=0.05, group=group_logic)
+show_c2_close_location = input.bool(true, "Show C2 close location on chart", group=group_logic)
+
+group_table = "Table Settings"
+show_table = input.bool(true, "Show Status Table", group=group_table)
+table_position = input.string("Top Right", "Table Position", options=["Top Right", "Top Left", "Bottom Right", "Bottom Left"], group=group_table)
+table_text_size = input.string("Small", "Table Text Size", options=["Tiny", "Small", "Normal"], group=group_table)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TABLE SIZE MAP
+// ══════════════════════════════════════════════════════════════════════════════
+table_size_map = table_text_size == "Tiny" ? size.tiny : table_text_size == "Small" ? size.small : size.normal
+
+// ══════════════════════════════════════════════════════════════════════════════
+// FUNCTIONS
+// ══════════════════════════════════════════════════════════════════════════════
+
+// Get higher timeframe data
+getHTFData(tf) =>
+    htf_open = request.security(syminfo.tickerid, tf, open, lookahead=barmerge.lookahead_off)
+    htf_high = request.security(syminfo.tickerid, tf, high, lookahead=barmerge.lookahead_off)
+    htf_low = request.security(syminfo.tickerid, tf, low, lookahead=barmerge.lookahead_off)
+    htf_close = request.security(syminfo.tickerid, tf, close, lookahead=barmerge.lookahead_off)
+    [htf_open, htf_high, htf_low, htf_close]
+
+// Detect C2 candle: Breaks C1 range but closes back inside
+// c1_high, c1_low = C1 range (2 bars ago from current)
+// c2_high, c2_low, c2_close = current candle just closed
+isC2(c1_high, c1_low, c2_high, c2_low, c2_close) =>
+    c1_range = c1_high - c1_low
+    min_breakout = c1_range * c2_breakout_pct
+    
+    // Bullish C2: Breaks below C1 low, then closes back inside C1 range
+    broke_below = c2_low < c1_low and (c1_low - c2_low) >= min_breakout
+    closed_inside_bull = c2_close > c1_low and c2_close <= c1_high
+    bull_c2 = broke_below and closed_inside_bull
+    
+    // Bearish C2: Breaks above C1 high, then closes back inside C1 range  
+    broke_above = c2_high > c1_high and (c2_high - c1_high) >= min_breakout
+    closed_inside_bear = c2_close < c1_high and c2_close >= c1_low
+    bear_c2 = broke_above and closed_inside_bear
+    
+    bull_c2 ? 1 : bear_c2 ? -1 : 0
+
+// ══════════════════════════════════════════════════════════════════════════════
+// HIGHER TIMEFRAME DATA
+// ══════════════════════════════════════════════════════════════════════════════
+
+[htf_1h_open, htf_1h_high, htf_1h_low, htf_1h_close] = getHTFData("60")
+[htf_30m_open, htf_30m_high, htf_30m_low, htf_30m_close] = getHTFData("30")
+
+// ══════════════════════════════════════════════════════════════════════════════
+// C2 DETECTION - ALERT ON C2 CLOSE
+// ══════════════════════════════════════════════════════════════════════════════
+
+// For 1H: 
+// C1 = htf_1h from 2 bars ago
+// C2 = htf_1h from 1 bar ago (just closed on current bar)
+// Alert when we detect valid C2 on close
+
+var int c2_1h_dir = 0
+
+if barstate.isconfirmed
+    c1_high_1h = htf_1h_high[2]
+    c1_low_1h = htf_1h_low[2]
+    c2_high_1h = htf_1h_high[1]
+    c2_low_1h = htf_1h_low[1]
+    c2_close_1h = htf_1h_close[1]
+    
+    // Detect if C2 just completed (1 bar ago was C2)
+    c2_1h_dir := isC2(c1_high_1h, c1_low_1h, c2_high_1h, c2_low_1h, c2_close_1h)
+
+// For 30M:
+var int c2_30m_dir = 0
+
+if barstate.isconfirmed
+    c1_high_30m = htf_30m_high[2]
+    c1_low_30m = htf_30m_low[2]
+    c2_high_30m = htf_30m_high[1]
+    c2_low_30m = htf_30m_low[1]
+    c2_close_30m = htf_30m_close[1]
+    
+    // Detect if C2 just completed (1 bar ago was C2)
+    c2_30m_dir := isC2(c1_high_30m, c1_low_30m, c2_high_30m, c2_low_30m, c2_close_30m)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// VISUAL PLOTTING
+// ══════════════════════════════════════════════════════════════════════════════
+
+// Plot on C2 candle location (1 bar ago when detected)
+c2_1h_bull = show_1h_c2 and c2_1h_dir == 1
+c2_1h_bear = show_1h_c2 and c2_1h_dir == -1
+c2_30m_bull = show_30m_c2 and c2_30m_dir == 1
+c2_30m_bear = show_30m_c2 and c2_30m_dir == -1
+
+// C2 Labels - placed at the C2 candle (1 bar back)
+plotshape(c2_1h_bull, title="1H C2 Bull", location=location.belowbar, color=color.yellow, 
+         style=shape.labelup, size=size.small, text="1H C2")
+plotshape(c2_1h_bear, title="1H C2 Bear", location=location.abovebar, color=color.yellow, 
+         style=shape.labeldown, size=size.small, text="1H C2")
+
+plotshape(c2_30m_bull, title="30M C2 Bull", location=location.belowbar, color=color.new(color.yellow, 30), 
+         style=shape.labelup, size=size.tiny, text="30M C2")
+plotshape(c2_30m_bear, title="30M C2 Bear", location=location.abovebar, color=color.new(color.yellow, 30), 
+         style=shape.labeldown, size=size.tiny, text="30M C2")
+
+// Show C2 close location (horizontal line)
+var line c2_close_line_1h = na
+var label c2_label_1h = na
+
+if c2_1h_dir != 0 and c2_1h_dir[1] == 0
+    // New C2 detected - draw line at close
+    c2_close_price = htf_1h_close[1]
+    c2_close_line_1h := line.new(bar_index[1], c2_close_price, bar_index, c2_close_price, 
+                                  color=c2_1h_dir == 1 ? color.green : color.red, 
+                                  style=line.style_dashed, width=2)
+    
+    label.delete(c2_label_1h)
+    c2_label_1h := label.new(bar_index[1], c2_close_price, 
+                            text="C2 Close: " + str.tostring(c2_close_price, format.mintick),
+                            color=color.gray, textcolor=color.white, 
+                            style=label.style_label_center, size=size.tiny)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ALERTS - FIRE ON C2 CLOSE
+// ══════════════════════════════════════════════════════════════════════════════
+
+// C2 Alerts - FIRE IMMEDIATELY ON C2 CLOSE
+alertcondition(c2_1h_bull, 
+              title="1H Bullish C2 - PREPARE FOR ENTRY", 
+              message="🟡 1H BULLISH C2 CLOSED! C1 low swept, closed back inside. PREPARE for C3 long entry on next candle. Watch for C3 that respects 50% of this C2 candle.")
+
+alertcondition(c2_1h_bear, 
+              title="1H Bearish C2 - PREPARE FOR ENTRY", 
+              message="🟡 1H BEARISH C2 CLOSED! C1 high swept, closed back inside. PREPARE for C3 short entry on next candle. Watch for C3 that respects 50% of this C2 candle.")
+
+alertcondition(c2_30m_bull, 
+              title="30M Bullish C2 - PREPARE FOR ENTRY", 
+              message="🟡 30M BULLISH C2 CLOSED! Prepare for C3 long entry on next 30M candle.")
+
+alertcondition(c2_30m_bear, 
+              title="30M Bearish C2 - PREPARE FOR ENTRY", 
+              message="🟡 30M BEARISH C2 CLOSED! Prepare for C3 short entry on next 30M candle.")
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TABLE SUMMARY
+// ══════════════════════════════════════════════════════════════════════════════
+
+table_pos = table_position == "Top Right" ? position.top_right :
+            table_position == "Top Left" ? position.top_left :
+            table_position == "Bottom Right" ? position.bottom_right :
+            position.bottom_left
+
+var table info_table = table.new(table_pos, 2, 3, bgcolor=color.new(color.black, 80), 
+                                 border_width=1, border_color=color.gray)
+
+if barstate.islast and show_table
+    table.cell(info_table, 0, 0, "Timeframe", text_color=color.white, text_size=table_size_map)
+    table.cell(info_table, 1, 0, "C2 Status", text_color=color.white, text_size=table_size_map)
+    
+    table.cell(info_table, 0, 1, "1H", text_color=color.white, text_size=table_size_map)
+    table.cell(info_table, 1, 1, c2_1h_dir == 1 ? "🟡 BULL C2" : c2_1h_dir == -1 ? "🟡 BEAR C2" : "—", 
+              text_color=c2_1h_dir != 0 ? color.yellow : color.gray, text_size=table_size_map)
+    
+    table.cell(info_table, 0, 2, "30M", text_color=color.white, text_size=table_size_map)
+    table.cell(info_table, 1, 2, c2_30m_dir == 1 ? "🟡 BULL C2" : c2_30m_dir == -1 ? "🟡 BEAR C2" : "—", 
+              text_color=c2_30m_dir != 0 ? color.yellow : color.gray, text_size=table_size_map)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// INFO PANEL
+// ══════════════════════════════════════════════════════════════════════════════
+
+var label info_label = na
+
+if barstate.islast
+    label.delete(info_label)
+    info_label := label.new(bar_index, high, 
+                           text="GxT C2/C3 Alerts\n• Yellow = C2 Closed (prepare)\n• Watch next candle for C3 entry\n• C3 should respect 50% of C2",
+                           color=color.black, textcolor=color.white, 
+                           style=label.style_label_lower_right, size=size.small,
+                           yloc=yloc.abovebar)
