@@ -1,0 +1,191 @@
+//@version=6
+indicator("GxT Alerts - C2 Detector", shorttitle="GxT C2", overlay=true, max_bars_back=500)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// GxT ALERTS - C2 DETECTOR
+// 
+// Valid C2 = ANY candle where:
+// 1. Wick goes outside C1 range (takes liquidity)
+// 2. Close is NOT inside C1 range in the direction of the sweep
+//
+// Types:
+// - Standard C2: Close inside C1 (manipulation only, wait for C3)
+// - Strong C2: Close beyond C1 (manipulation + expansion, still wait for C3)
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════════════════════════════════
+// INPUTS
+// ══════════════════════════════════════════════════════════════════════════════
+
+group_tf = "Timeframes"
+show_4h = input.bool(true, "4H C2 Alerts", group=group_tf)
+show_1h = input.bool(true, "1H C2 Alerts", group=group_tf)
+show_30m = input.bool(true, "30M C2 Alerts", group=group_tf)
+
+group_table = "Table"
+show_table = input.bool(true, "Show C2 Table", group=group_table)
+table_position = input.string("Top Right", "Position", options=["Top Right", "Top Left", "Bottom Right", "Bottom Left"], group=group_table)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// FUNCTIONS
+// ══════════════════════════════════════════════════════════════════════════════
+
+getHTFData(tf) =>
+    htf_open = request.security(syminfo.tickerid, tf, open, lookahead=barmerge.lookahead_off)
+    htf_high = request.security(syminfo.tickerid, tf, high, lookahead=barmerge.lookahead_off)
+    htf_low = request.security(syminfo.tickerid, tf, low, lookahead=barmerge.lookahead_off)
+    htf_close = request.security(syminfo.tickerid, tf, close, lookahead=barmerge.lookahead_off)
+    [htf_open, htf_high, htf_low, htf_close]
+
+// Valid C2: Wick outside C1 + valid close (inside OR beyond C1)
+isValidC2(c1_high, c1_low, c2_high, c2_low, c2_close) =>
+    // Bullish C2: Wick below C1 low, close anywhere valid (above C1 low)
+    bull_c2 = c2_low < c1_low and c2_close > c1_low
+    
+    // Bearish C2: Wick above C1 high, close anywhere valid (below C1 high)
+    bear_c2 = c2_high > c1_high and c2_close < c1_high
+    
+    bull_c2 ? 1 : bear_c2 ? -1 : 0
+
+// C2 type classification
+c2Type(c1_high, c1_low, c2_close) =>
+    // Standard: Close inside C1 range
+    // Strong: Close beyond C1 range
+    close_inside = c2_close > c1_low and c2_close < c1_high
+    close_beyond_bull = c2_close > c1_high
+    close_beyond_bear = c2_close < c1_low
+    
+    close_inside ? "Std" : (close_beyond_bull or close_beyond_bear) ? "Strong" : ""
+
+// ══════════════════════════════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════════════════════════════
+
+[htf_4h_o, htf_4h_h, htf_4h_l, htf_4h_c] = getHTFData("240")
+[htf_1h_o, htf_1h_h, htf_1h_l, htf_1h_c] = getHTFData("60")
+[htf_30m_o, htf_30m_h, htf_30m_l, htf_30m_c] = getHTFData("30")
+
+// ══════════════════════════════════════════════════════════════════════════════
+// C2 DETECTION
+// ══════════════════════════════════════════════════════════════════════════════
+
+var int c2_4h_dir = 0
+var string c2_4h_type = ""
+if barstate.isconfirmed and show_4h
+    c2_4h_dir := isValidC2(htf_4h_h[1], htf_4h_l[1], htf_4h_h, htf_4h_l, htf_4h_c)
+    c2_4h_type := c2_4h_dir != 0 ? c2Type(htf_4h_h[1], htf_4h_l[1], htf_4h_c) : ""
+
+var int c2_1h_dir = 0
+var string c2_1h_type = ""
+if barstate.isconfirmed and show_1h
+    c2_1h_dir := isValidC2(htf_1h_h[1], htf_1h_l[1], htf_1h_h, htf_1h_l, htf_1h_c)
+    c2_1h_type := c2_1h_dir != 0 ? c2Type(htf_1h_h[1], htf_1h_l[1], htf_1h_c) : ""
+
+var int c2_30m_dir = 0
+var string c2_30m_type = ""
+if barstate.isconfirmed and show_30m
+    c2_30m_dir := isValidC2(htf_30m_h[1], htf_30m_l[1], htf_30m_h, htf_30m_l, htf_30m_c)
+    c2_30m_type := c2_30m_dir != 0 ? c2Type(htf_30m_h[1], htf_30m_l[1], htf_30m_c) : ""
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PLOTTING
+// ══════════════════════════════════════════════════════════════════════════════
+
+// Standard C2 (Yellow)
+plotshape(show_1h and c2_1h_dir == 1 and c2_1h_type == "Std", 
+         title="1H C2 Std Bull", location=location.belowbar, color=color.yellow, 
+         style=shape.labelup, size=size.small, text="C2")
+plotshape(show_1h and c2_1h_dir == -1 and c2_1h_type == "Std", 
+         title="1H C2 Std Bear", location=location.abovebar, color=color.yellow, 
+         style=shape.labeldown, size=size.small, text="C2")
+
+plotshape(show_30m and c2_30m_dir == 1 and c2_30m_type == "Std", 
+         title="30M C2 Std Bull", location=location.belowbar, color=color.new(color.yellow, 30), 
+         style=shape.labelup, size=size.tiny, text="C2")
+plotshape(show_30m and c2_30m_dir == -1 and c2_30m_type == "Std", 
+         title="30M C2 Std Bear", location=location.abovebar, color=color.new(color.yellow, 30), 
+         style=shape.labeldown, size=size.tiny, text="C2")
+
+// Strong C2 (Orange - bigger)
+plotshape(show_1h and c2_1h_dir == 1 and c2_1h_type == "Strong", 
+         title="1H C2 Strong Bull", location=location.belowbar, color=color.orange, 
+         style=shape.labelup, size=size.normal, text="C2★")
+plotshape(show_1h and c2_1h_dir == -1 and c2_1h_type == "Strong", 
+         title="1H C2 Strong Bear", location=location.abovebar, color=color.orange, 
+         style=shape.labeldown, size=size.normal, text="C2★")
+
+plotshape(show_30m and c2_30m_dir == 1 and c2_30m_type == "Strong", 
+         title="30M C2 Strong Bull", location=location.belowbar, color=color.new(color.orange, 30), 
+         style=shape.labelup, size=size.small, text="C2★")
+plotshape(show_30m and c2_30m_dir == -1 and c2_30m_type == "Strong", 
+         title="30M C2 Strong Bear", location=location.abovebar, color=color.new(color.orange, 30), 
+         style=shape.labeldown, size=size.small, text="C2★")
+
+// 4H C2
+plotshape(show_4h and c2_4h_dir == 1, 
+         title="4H C2 Bull", location=location.belowbar, color=color.new(color.orange, 50), 
+         style=shape.labelup, size=size.normal, text="4H")
+plotshape(show_4h and c2_4h_dir == -1, 
+         title="4H C2 Bear", location=location.abovebar, color=color.new(color.orange, 50), 
+         style=shape.labeldown, size=size.normal, text="4H")
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ALERTS
+// ══════════════════════════════════════════════════════════════════════════════
+
+// Standard C2
+alertcondition(show_1h and c2_1h_dir == 1 and c2_1h_type == "Std", 
+              title="1H Std C2 Bull", 
+              message="🟡 1H Standard C2 - Liquidity swept, close inside. WAIT for C3 entry on next candle.")
+alertcondition(show_1h and c2_1h_dir == -1 and c2_1h_type == "Std", 
+              title="1H Std C2 Bear", 
+              message="🟡 1H Standard C2 - Liquidity swept, close inside. WAIT for C3 entry on next candle.")
+
+// Strong C2
+alertcondition(show_1h and c2_1h_dir == 1 and c2_1h_type == "Strong", 
+              title="1H Strong C2 Bull", 
+              message="🟠 1H Strong C2 - Liquidity swept AND expansion shown! C2 closed beyond C1. Still wait for C3 confirmation on next candle.")
+alertcondition(show_1h and c2_1h_dir == -1 and c2_1h_type == "Strong", 
+              title="1H Strong C2 Bear", 
+              message="🟠 1H Strong C2 - Liquidity swept AND expansion shown! C2 closed beyond C1. Still wait for C3 confirmation on next candle.")
+
+// 30M
+alertcondition(show_30m and c2_30m_dir == 1, title="30M C2 Bull", message="🟡 30M C2 - Prepare for C3")
+alertcondition(show_30m and c2_30m_dir == -1, title="30M C2 Bear", message="🟡 30M C2 - Prepare for C3")
+
+// 4H
+alertcondition(show_4h and c2_4h_dir == 1, title="4H C2 Bull", message="🟠 4H C2 - Check for 1H/30M C3 entry inside")
+alertcondition(show_4h and c2_4h_dir == -1, title="4H C2 Bear", message="🟠 4H C2 - Check for 1H/30M C3 entry inside")
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TABLE
+// ══════════════════════════════════════════════════════════════════════════════
+
+table_pos = table_position == "Top Right" ? position.top_right : table_position == "Top Left" ? position.top_left : table_position == "Bottom Right" ? position.bottom_right : position.bottom_left
+
+var table c2_table = table.new(table_pos, 2, 4, bgcolor=color.new(color.black, 80), border_width=1, border_color=color.gray)
+
+if barstate.islast and show_table
+    table.cell(c2_table, 0, 0, "TF", text_color=color.white, text_size=size.small)
+    table.cell(c2_table, 1, 0, "C2 Status", text_color=color.white, text_size=size.small)
+    
+    row = 1
+    if show_4h
+        c2_txt_4h = c2_4h_dir == 1 ? "🟢 BULL" : c2_4h_dir == -1 ? "🔴 BEAR" : "—"
+        c2_col_4h = c2_4h_dir == 1 ? color.green : c2_4h_dir == -1 ? color.red : color.gray
+        table.cell(c2_table, 0, row, "4H", text_color=color.white, text_size=size.small)
+        table.cell(c2_table, 1, row, c2_txt_4h, text_color=c2_col_4h, text_size=size.small)
+        row += 1
+    
+    if show_1h
+        c2_txt_1h = c2_1h_dir == 1 ? (c2_1h_type == "Strong" ? "🟠 BULL ★" : "🟡 BULL") : c2_1h_dir == -1 ? (c2_1h_type == "Strong" ? "🟠 BEAR ★" : "🟡 BEAR") : "—"
+        c2_col_1h = c2_1h_dir == 1 ? (c2_1h_type == "Strong" ? color.orange : color.yellow) : c2_1h_dir == -1 ? (c2_1h_type == "Strong" ? color.orange : color.yellow) : color.gray
+        table.cell(c2_table, 0, row, "1H", text_color=color.white, text_size=size.small)
+        table.cell(c2_table, 1, row, c2_txt_1h, text_color=c2_col_1h, text_size=size.small)
+        row += 1
+    
+    if show_30m
+        c2_txt_30m = c2_30m_dir == 1 ? (c2_30m_type == "Strong" ? "🟠 BULL ★" : "🟡 BULL") : c2_30m_dir == -1 ? (c2_30m_type == "Strong" ? "🟠 BEAR ★" : "🟡 BEAR") : "—"
+        c2_col_30m = c2_30m_dir == 1 ? (c2_30m_type == "Strong" ? color.orange : color.yellow) : c2_30m_dir == -1 ? (c2_30m_type == "Strong" ? color.orange : color.yellow) : color.gray
+        table.cell(c2_table, 0, row, "30M", text_color=color.white, text_size=size.small)
+        table.cell(c2_table, 1, row, c2_txt_30m, text_color=c2_col_30m, text_size=size.small)
