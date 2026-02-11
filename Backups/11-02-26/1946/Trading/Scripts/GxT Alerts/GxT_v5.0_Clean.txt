@@ -1,0 +1,106 @@
+//@version=6
+indicator("GxT Alerts - C2/C3", shorttitle="GxT C2C3", overlay=true, max_bars_back=500)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// GxT ALERTS - C2 DETECTION (Alert on C2 close, manual C3 entry)
+// C1 = Reference candle
+// C2 = Breaks C1 range, closes back inside → ALERT HERE
+// C3 = Next candle - manual entry decision
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════════════════════════════════
+// INPUTS
+// ══════════════════════════════════════════════════════════════════════════════
+
+group_timeframe = "Timeframe Settings"
+show_1h_c2 = input.bool(true, "Show 1H C2 Alerts", group=group_timeframe)
+show_30m_c2 = input.bool(true, "Show 30M C2 Alerts", group=group_timeframe)
+
+group_logic = "C2 Detection"
+c2_breakout_pct = input.float(0.2, "Min breakout beyond C1 (%)", minval=0.05, maxval=0.5, step=0.05, group=group_logic)
+
+group_table = "Table"
+show_table = input.bool(true, "Show Table", group=group_table)
+table_position = input.string("Top Right", "Position", options=["Top Right", "Top Left", "Bottom Right", "Bottom Left"], group=group_table)
+table_text_size = input.string("Small", "Text Size", options=["Tiny", "Small", "Normal"], group=group_table)
+
+// ══════════════════════════════════════════════════════════════════════════════
+table_size_map = table_text_size == "Tiny" ? size.tiny : table_text_size == "Small" ? size.small : size.normal
+
+// ══════════════════════════════════════════════════════════════════════════════
+// FUNCTIONS
+// ══════════════════════════════════════════════════════════════════════════════
+
+getHTFData(tf) =>
+    htf_open = request.security(syminfo.tickerid, tf, open, lookahead=barmerge.lookahead_off)
+    htf_high = request.security(syminfo.tickerid, tf, high, lookahead=barmerge.lookahead_off)
+    htf_low = request.security(syminfo.tickerid, tf, low, lookahead=barmerge.lookahead_off)
+    htf_close = request.security(syminfo.tickerid, tf, close, lookahead=barmerge.lookahead_off)
+    [htf_open, htf_high, htf_low, htf_close]
+
+isC2(c1_high, c1_low, c2_high, c2_low, c2_close) =>
+    c1_range = c1_high - c1_low
+    min_breakout = c1_range * c2_breakout_pct
+    
+    bull_c2 = c2_low < c1_low and (c1_low - c2_low) >= min_breakout and c2_close > c1_low and c2_close <= c1_high
+    bear_c2 = c2_high > c1_high and (c2_high - c1_high) >= min_breakout and c2_close < c1_high and c2_close >= c1_low
+    
+    bull_c2 ? 1 : bear_c2 ? -1 : 0
+
+// ══════════════════════════════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════════════════════════════
+
+[htf_1h_open, htf_1h_high, htf_1h_low, htf_1h_close] = getHTFData("60")
+[htf_30m_open, htf_30m_high, htf_30m_low, htf_30m_close] = getHTFData("30")
+
+// ══════════════════════════════════════════════════════════════════════════════
+// C2 DETECTION
+// ══════════════════════════════════════════════════════════════════════════════
+
+var int c2_1h_dir = 0
+if barstate.isconfirmed
+    c2_1h_dir := isC2(htf_1h_high[2], htf_1h_low[2], htf_1h_high[1], htf_1h_low[1], htf_1h_close[1])
+
+var int c2_30m_dir = 0
+if barstate.isconfirmed
+    c2_30m_dir := isC2(htf_30m_high[2], htf_30m_low[2], htf_30m_high[1], htf_30m_low[1], htf_30m_close[1])
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PLOTTING - C2 LABELS ONLY
+// ══════════════════════════════════════════════════════════════════════════════
+
+c2_1h_bull = show_1h_c2 and c2_1h_dir == 1
+c2_1h_bear = show_1h_c2 and c2_1h_dir == -1
+c2_30m_bull = show_30m_c2 and c2_30m_dir == 1
+c2_30m_bear = show_30m_c2 and c2_30m_dir == -1
+
+plotshape(c2_1h_bull, title="1H C2 Bull", location=location.belowbar, color=color.yellow, style=shape.labelup, size=size.small, text="1H C2")
+plotshape(c2_1h_bear, title="1H C2 Bear", location=location.abovebar, color=color.yellow, style=shape.labeldown, size=size.small, text="1H C2")
+plotshape(c2_30m_bull, title="30M C2 Bull", location=location.belowbar, color=color.new(color.yellow, 30), style=shape.labelup, size=size.tiny, text="30M C2")
+plotshape(c2_30m_bear, title="30M C2 Bear", location=location.abovebar, color=color.new(color.yellow, 30), style=shape.labeldown, size=size.tiny, text="30M C2")
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ALERTS
+// ══════════════════════════════════════════════════════════════════════════════
+
+alertcondition(c2_1h_bull, title="1H Bullish C2", message="🟡 1H BULLISH C2 CLOSED! Prepare for C3 long entry on next candle.")
+alertcondition(c2_1h_bear, title="1H Bearish C2", message="🟡 1H BEARISH C2 CLOSED! Prepare for C3 short entry on next candle.")
+alertcondition(c2_30m_bull, title="30M Bullish C2", message="🟡 30M BULLISH C2 CLOSED! Prepare for C3 long entry.")
+alertcondition(c2_30m_bear, title="30M Bearish C2", message="🟡 30M BEARISH C2 CLOSED! Prepare for C3 short entry.")
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TABLE
+// ══════════════════════════════════════════════════════════════════════════════
+
+table_pos = table_position == "Top Right" ? position.top_right : table_position == "Top Left" ? position.top_left : table_position == "Bottom Right" ? position.bottom_right : position.bottom_left
+
+var table info_table = table.new(table_pos, 2, 3, bgcolor=color.new(color.black, 80), border_width=1, border_color=color.gray)
+
+if barstate.islast and show_table
+    table.cell(info_table, 0, 0, "TF", text_color=color.white, text_size=table_size_map)
+    table.cell(info_table, 1, 0, "C2 Status", text_color=color.white, text_size=table_size_map)
+    table.cell(info_table, 0, 1, "1H", text_color=color.white, text_size=table_size_map)
+    table.cell(info_table, 1, 1, c2_1h_dir == 1 ? "🟡 BULL" : c2_1h_dir == -1 ? "🟡 BEAR" : "—", text_color=c2_1h_dir != 0 ? color.yellow : color.gray, text_size=table_size_map)
+    table.cell(info_table, 0, 2, "30M", text_color=color.white, text_size=table_size_map)
+    table.cell(info_table, 1, 2, c2_30m_dir == 1 ? "🟡 BULL" : c2_30m_dir == -1 ? "🟡 BEAR" : "—", text_color=c2_30m_dir != 0 ? color.yellow : color.gray, text_size=table_size_map)
